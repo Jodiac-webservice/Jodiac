@@ -1,0 +1,82 @@
+@import "tailwindcss";
+@layer utilities {
+  @keyframes artisticImage {
+    0% {
+      opacity: 0;
+      transform: scale(1.1) rotate(2deg) translateX(10px);
+      filter: blur(6px);
+    }
+    10% {
+      opacity: 0.8;
+      transform: scale(1) rotate(0deg) translateX(0px);
+      filter: blur(0);
+    }
+    30% {
+      opacity: 1;
+      transform: scale(1.05) rotate(-1deg) translateX(-5px);
+      filter: blur(2px);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.08) rotate(2deg) translateX(5px);
+      filter: blur(4px);
+    }
+    70% {
+      opacity: 0.9;
+      transform: scale(1.02) rotate(-2deg) translateX(0px);
+      filter: blur(0);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1.1) rotate(1deg) translateX(0px);
+      filter: blur(5px);
+    }
+  }
+
+  .animate-artisticImage {
+    animation: artisticImage 12s infinite ease-in-out;
+  }
+
+  .animation-delay-0 {
+    animation-delay: 0s;
+  }
+  .animation-delay-1000 {
+    animation-delay: 1s;
+  }
+  .animation-delay-2000 {
+    animation-delay: 1s;
+  }
+  .animation-delay-3000 {
+    animation-delay: 3s;
+  }
+  .animation-delay-5000 {
+    animation-delay: 5s;
+  }
+  .animation-delay-7000 {
+    animation-delay: 7s;
+  }
+  .animation-delay-9000 {
+    animation-delay: 9s;
+  }
+
+  @keyframes textPulse {
+    0%, 100% {
+      text-shadow: 0 0 20px #8bbeb2, 0 0 40px #8bbeb2, 0 0 60px #8bbeb2;
+      letter-spacing: 0.1em;
+    }
+    50% {
+      text-shadow: 0 0 30px #fff, 0 0 50px #fff, 0 0 80px #fff;
+      letter-spacing: 0.2em;
+    }
+  }
+
+  .animate-textPulse {
+    animation: textPulse 5s ease-in-out infinite;
+  }
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+}
