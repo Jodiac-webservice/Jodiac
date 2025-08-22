@@ -20,7 +20,7 @@ useEffect(() => {
         return;
       }
 
-      const response = await fetch("http://localhost:4000/api/auth/getuser", {
+      const response = await fetch("https://jodiacbackend.onrender.com/api/auth/getuser", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -37,7 +37,7 @@ const handleSubmit = async (e) => {
   setMessage("");
 
   try {
-    const res = await fetch("http://localhost:4000/api/Shipping/addaddress", {
+    const res = await fetch("https://jodiacbackend.onrender.com/api/Shipping/addaddress", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

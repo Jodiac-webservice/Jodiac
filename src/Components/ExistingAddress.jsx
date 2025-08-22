@@ -26,7 +26,7 @@ export default function ExistingAddress({ onDeliverHere }) {
       setLoading(true);
       try {
         const response = await fetch(
-          "http://localhost:4000/api/Shipping/Getaddress",
+          "https://jodiacbackend.onrender.com/api/Shipping/Getaddress",
           {
             method: "GET",
             headers: {

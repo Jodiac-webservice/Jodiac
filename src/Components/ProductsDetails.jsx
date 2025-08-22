@@ -32,7 +32,7 @@ function ProductsDetails() {
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const res = await axios.get(`http://localhost:4000/api/product/${id}`);
+        const res = await axios.get(`https://jodiacbackend.onrender.com/api/product/${id}`);
         const data = res.data.product;
         setProduct(data);
 
@@ -58,7 +58,7 @@ function ProductsDetails() {
         return;
       }
       const res = await axios.post(
-        "http://localhost:4000/api/Cart/addcart",
+        "https://jodiacbackend.onrender.com/api/Cart/addcart",
         {
           productId: id,
           quantity,
