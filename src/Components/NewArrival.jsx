@@ -19,8 +19,8 @@ const NewArrival = () => {
     fetchProductData();
   }, []);
 
-  const handleProductClick = () => {
-    navigate(`/Productpage`); 
+  const handleProductClick = (productId) => {
+    navigate(`/Productpage/${productId}`);
   };
 
   return (
@@ -33,7 +33,7 @@ const NewArrival = () => {
         {products.map((product) => (
           <div
             key={product._id}
-            onClick={() => handleProductClick(product._id)} // 👈 clickable card
+            onClick={() => handleProductClick(product._id)}
             className="flex flex-col cursor-pointer group transition-transform hover:-translate-y-2 duration-300 text-left"
           >
             <img

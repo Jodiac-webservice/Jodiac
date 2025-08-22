@@ -28,8 +28,7 @@ const products = [
 const JodiacShowcase = () => {
   return (
     <div className="bg-white px-10 md:px-8 py-8">
-      <div className="text-left text-3xl md:text-5xl font-extrabold mb-6 md:mb-10 tracking-wide">@JODIAC</div>
-
+      <div className="text-left text-2xl md:text-4xl font-extrabold mb-6 md:mb-10 tracking-wide">@The_Best_For_Us</div>
       <div className="flex overflow-x-auto no-scrollbar space-x-4 md:space-x-6 snap-x snap-mandatory">
         {products.map((product, index) => (
           <motion.div
