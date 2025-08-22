@@ -140,7 +140,7 @@ const handleRedirect = () => {
             onClick={() => setSelected(opt)}
             className={`group relative px-5 py-3 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 ${
               selected === opt
-                ? "bg-gradient-to-r from-[#14213d] to-[#fca311] text-[#e5e5e5] shadow-2xl shadow-indigo-300/50 scale-105"
+                ? "bg-gradient-to-r from-[#14213d] to-[#010646] text-[#e5e5e5] shadow-2xl shadow-indigo-300/50 scale-105"
                 : "bg-white text-gray-700 hover:bg-gray-50 border-2 border-gray-200 hover:border-indigo-300 shadow-lg hover:shadow-xl"
             }`}
           >
