@@ -38,6 +38,8 @@ export default function Review() {
           productName: item.name,
           quantity: item.quantity,
           price: item.price,
+          color: item.color,
+          size: item.size
         })),
         shippingAddress: {
           name: selectedAddress.name,
@@ -56,7 +58,7 @@ export default function Review() {
       const token = localStorage.getItem("token");
 
       const res = await axios.post(
-        "https://jodiacbackend.onrender.com/api/Orders/createOrders",
+        "http://localhost:4000/api/Orders/createOrders",
         payload,
         {
           headers: {
