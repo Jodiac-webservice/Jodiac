@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
 
-export const AdminNavbar = () => {
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeItem, setActiveItem] = useState("Dashboard");
+export const AdminNavbar = ({ activeItem, setActiveItem }) => {
+  const [isProfileOpen, setIsProfileOpen] = React.useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   const menuItems = ["Dashboard", "Products", "Users", "Analytics", "Settings"];
 
@@ -40,9 +39,8 @@ export const AdminNavbar = () => {
           </div>
         </div>
 
-        {/* Right - Actions & Profile */}
-        <div className="flex items-center space-x-3">   
-
+        {/* Right - Profile + Mobile toggle */}
+        <div className="flex items-center space-x-3">
           {/* Profile Dropdown */}
           <div className="relative">
             <button
@@ -55,7 +53,7 @@ export const AdminNavbar = () => {
                 className="w-8 h-8 rounded-full border-2 border-[#6b705c]"
               />
               <span className="hidden sm:block text-sm font-medium text-[#f2e8cf]">
-                John Doe
+                Jodiac Admins
               </span>
               <ChevronDown
                 className={`w-4 h-4 transition-transform duration-200 ${

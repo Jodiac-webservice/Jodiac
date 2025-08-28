@@ -4,7 +4,10 @@ import { DollarSign, TrendingUp, ShoppingCart, Percent } from "lucide-react";
 
 const DashboardCards = ({ onActiveOrdersClick }) => {
   const [activeOrders, setActiveOrders] = useState(0);
+  const [revenue, setRevenue] = useState(0);
+  const [profitMargin, setProfitMargin] = useState(0);
 
+  // 🔹 Fetch Active Orders
   useEffect(() => {
     fetch("https://jodiacbackend.onrender.com/api/getActiveOrders")
       .then(res => res.json())
@@ -16,11 +19,34 @@ const DashboardCards = ({ onActiveOrdersClick }) => {
       .catch(err => console.error(err));
   }, []);
 
+  // 🔹 Fetch Revenue
+  useEffect(() => {
+    fetch("https://jodiacbackend.onrender.com/api/getRevenue")
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setRevenue(data.totalRevenue);
+        }
+      })
+      .catch(err => console.error(err));
+  }, []);
+
+  // 🔹 Fetch Profit Margin
+  useEffect(() => {
+    fetch("https://jodiacbackend.onrender.com/api/getRevenueAndCost")
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setProfitMargin(data.profitMargin);
+        }
+      })
+      .catch(err => console.error(err));
+  }, []);
+
   const cards = [
-    { title: "Revenue", value: "₹2,45,000", icon: <DollarSign className="w-6 h-6 text-[#4b5d52]" /> },
-    { title: "Profit Margin", value: "32%", icon: <TrendingUp className="w-6 h-6 text-[#4b5d52]" /> },
+    { title: "Revenue", value: `₹${revenue.toLocaleString()}`, icon: <DollarSign className="w-6 h-6 text-[#4b5d52]" /> },
+    { title: "Profit Margin", value: `${profitMargin}%`, icon: <TrendingUp className="w-6 h-6 text-[#4b5d52]" /> },
     { title: "Active Orders", value: activeOrders, icon: <ShoppingCart className="w-6 h-6 text-[#4b5d52]" />, isActive: true },
-    { title: "Conversion Rate", value: "4.5%", icon: <Percent className="w-6 h-6 text-[#4b5d52]" /> },
   ];
 
   return (
@@ -47,6 +73,5 @@ const DashboardCards = ({ onActiveOrdersClick }) => {
     </div>
   );
 };
-
 
 export default DashboardCards;
