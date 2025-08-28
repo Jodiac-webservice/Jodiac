@@ -5,13 +5,13 @@ const ActiveOrders = ({ onBack }) => {
 
   useEffect(() => {
     fetch("https://jodiacbackend.onrender.com/api/getActiveOrders")
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (data.success) {
           setOrders(data.orders);
         }
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   }, []);
 
   return (
@@ -36,20 +36,30 @@ const ActiveOrders = ({ onBack }) => {
                 <th className="p-3 border">Order ID</th>
                 <th className="p-3 border">Customer</th>
                 <th className="p-3 border">Phone</th>
+                <th className="p-3 border">Product Name</th>
+                <th className="p-3 border">Quantity</th>
                 <th className="p-3 border">Total</th>
                 <th className="p-3 border">Status</th>
+                <th className="p-3 border">Payment Method</th>
               </tr>
             </thead>
             <tbody>
-              {orders.map(order => (
-                <tr key={order._id} className="hover:bg-[#fdfaf3]">
-                  <td className="p-3 border">{order._id}</td>
-                  <td className="p-3 border">{order.shippingAddress.name}</td>
-                  <td className="p-3 border">{order.shippingAddress.phone}</td>
-                  <td className="p-3 border">₹{order.totalAmount}</td>
-                  <td className="p-3 border">{order.orderStatus}</td>
-                </tr>
-              ))}
+              {orders.map((order) =>
+                order.orderItems.map((item, idx) => (
+                  <tr key={`${order._id}-${idx}`} className="hover:bg-[#fdfaf3]">
+                    <td className="p-3 border">{order._id}</td>
+                    <td className="p-3 border">{order.shippingAddress?.name}</td>
+                    <td className="p-3 border">{order.shippingAddress?.phone}</td>
+                    <td className="p-3 border max-w-[200px] truncate" title={item.productName}>
+                      {item.productName}
+                    </td>
+                    <td className="p-3 border">{item.quantity}</td>
+                    <td className="p-3 border">₹{order.totalAmount}</td>
+                    <td className="p-3 border">{order.orderStatus}</td>
+                    <td className="p-3 border">{order.paymentMethod}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
