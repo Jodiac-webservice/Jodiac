@@ -24,7 +24,7 @@ const handleSignIn = async (e) => {
   posthog.capture("signin_attempt", { method: "email" });
 
   try {
-    const response = await fetch("https://jodiacbackend.onrender.comapi/auth/signin", {
+    const response = await fetch("https://jodiacbackend.onrender.com/api/auth/signin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
