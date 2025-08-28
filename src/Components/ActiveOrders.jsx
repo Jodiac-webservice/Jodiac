@@ -4,7 +4,7 @@ const ActiveOrders = ({ onBack }) => {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:4000/api/getActiveOrders")
+    fetch("https://jodiacbackend.onrender.comapi/getActiveOrders")
       .then(res => res.json())
       .then(data => {
         if (data.success) {
