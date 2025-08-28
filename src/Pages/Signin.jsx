@@ -12,43 +12,53 @@ const SignIn = () => {
   const [isForgotPasswordLoading, setIsForgotPasswordLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSignIn = async (e) => {
-    e.preventDefault();
-    
-    // Basic validation
-    if (!email || !password) {
-      setErrorMessage("Please fill in all fields");
+const handleSignIn = async (e) => {
+  e.preventDefault();
+
+  if (!email || !password) {
+    setErrorMessage("Please fill in all fields");
+    return;
+  }
+
+  setIsLoading(true);
+  posthog.capture("signin_attempt", { method: "email" });
+
+  try {
+    const response = await fetch("http://localhost:4000/api/auth/signin", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+    console.log("API response:", data); // 👀 check what's coming
+
+    if (!response.ok) {
+      setErrorMessage(data.message || "Sign-in failed. Please try again.");
       return;
     }
 
-    setIsLoading(true);
-    posthog.capture("signin_attempt", { method: "email" });
+    // Save token
+    localStorage.setItem("token", data.accessToken);
 
-    try {
-      const response = await fetch("https://jodiacbackend.onrender.com/api/auth/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-      
-      if (!response.ok) {
-        setErrorMessage(data.message || "Sign-in failed. Please try again.");
-        return;
-      }
-
-      localStorage.setItem("token", data.accessToken);
+    // ✅ Check role directly
+    if (data.role === "admin") {
+      navigate("/AdminPanel");
+    } else {
       navigate("/");
-    } catch (error) {
-      console.error("Error:", error);
-      setErrorMessage("Failed to sign in. Please try again later.");
-    } finally {
-      setIsLoading(false);
     }
-  };
+
+  } catch (error) {
+    console.error("Error:", error);
+    setErrorMessage("Failed to sign in. Please try again later.");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
 
   const handleForgotPassword = async () => {
     setIsForgotPasswordLoading(true);

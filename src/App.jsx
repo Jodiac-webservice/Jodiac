@@ -8,6 +8,7 @@ import ProductPage from './Pages/ProductPage';
 import Checkout from './Pages/Cheakout';
 import Payment from './Components/Payment';
 import Review from './Components/review';
+import AdminPanel from './Pages/AdminPanel';
 import './App.css'
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path='/checkout' element={<Checkout/>}/>
         <Route path='/Payment' element={<Payment/>}/>
         <Route path='/review' element={<Review/>}/>
+        <Route path='/AdminPanel' element={<AdminPanel/>}/>
       </Routes>
     </BrowserRouter>
   )
