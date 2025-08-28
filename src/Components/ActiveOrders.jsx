@@ -38,9 +38,12 @@ const ActiveOrders = ({ onBack }) => {
                 <th className="p-3 border">Phone</th>
                 <th className="p-3 border">Product Name</th>
                 <th className="p-3 border">Quantity</th>
+                <th className="p-3 border">Color</th>
+                <th className="p-3 border">Size</th>
                 <th className="p-3 border">Total</th>
                 <th className="p-3 border">Status</th>
                 <th className="p-3 border">Payment Method</th>
+                <th className="p-3 border">Date</th>
               </tr>
             </thead>
             <tbody>
@@ -54,9 +57,12 @@ const ActiveOrders = ({ onBack }) => {
                       {item.productName}
                     </td>
                     <td className="p-3 border">{item.quantity}</td>
+                    <td className="p-3 border">{item.color}</td>
+                    <td className="p-3 border">{item.size}</td>
                     <td className="p-3 border">₹{order.totalAmount}</td>
                     <td className="p-3 border">{order.orderStatus}</td>
                     <td className="p-3 border">{order.paymentMethod}</td>
+                    <td className="p-3 border">{order.createdAt}</td>
                   </tr>
                 ))
               )}
