@@ -5,7 +5,7 @@ export const AdminNavbar = ({ activeItem, setActiveItem }) => {
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
-  const menuItems = ["Dashboard", "Products", "Users", "Analytics", "Settings"];
+  const menuItems = ["Dashboard", "Products", "Analytics", "Settings"];
 
   return (
     <nav className="w-full align-middle bg-[#1b2d2a] border-b border-[#3c4c47] shadow-md">
