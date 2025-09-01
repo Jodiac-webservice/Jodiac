@@ -5,7 +5,7 @@ const [formData, setFormdata] = useState({
     name: "",
     phone: "",
     streetAddress: "",
-    Landmark: "",
+    landmark: "",
     city:'',
     pincode:'',
     state:'',
@@ -61,7 +61,7 @@ const handleSubmit = async (e) => {
       name: "",
       phone: "",
       streetAddress: "",
-      Landmark: "",
+      landmark: "",
       city: "",
       pincode: "",
       state: "",
@@ -112,10 +112,10 @@ const handleSubmit = async (e) => {
 
         <input
           type="text"
-          name="Landmark"
+          name="landmark"
           placeholder="Area, Colony, Street, etc."
           className="border p-3 rounded"
-          value={formData.Landmark}
+          value={formData.landmark}
           onChange={handleChange}
           required
         />

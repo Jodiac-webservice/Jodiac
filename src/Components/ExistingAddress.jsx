@@ -80,9 +80,10 @@ export default function ExistingAddress({ onDeliverHere }) {
 
     if (selectedAddress) {
       localStorage.setItem("selectedAddress", JSON.stringify(selectedAddress));
-      console.log("Selected address saved:", selectedAddress);
+      console.log("Selected address saved:", selectedAddress, selectedAddress.landmark);
 
       alert(`Delivering to: ${selectedAddress.streetAddress}, ${selectedAddress.city}`);
+      console.log("landmark:", selectedAddress.landmark);
       navigate("/Payment");
 
       if (onDeliverHere) {
@@ -123,7 +124,7 @@ export default function ExistingAddress({ onDeliverHere }) {
         <div>
           <p className="font-bold">{address.name}</p>
           <p className="text-sm text-gray-600">{address.streetAddress}</p>
-          <p className="text-sm text-gray-600">{address.Landmark}</p>
+          <p className="text-sm text-gray-600">{address.landmark}</p>
           <p className="text-sm text-gray-600">
             {address.city}, {address.state} - {address.pincode}
           </p>

@@ -32,33 +32,35 @@ export default function Review() {
     setMessage("");
 
     try {
-      const payload = {
-        orderItems: selectedProduct.map((item) => ({
-          productId: item.productId,
-          productName: item.name,
-          quantity: item.quantity,
-          price: item.price,
-          color: item.color,
-          size: item.size
-        })),
-        shippingAddress: {
-          name: selectedAddress.name,
-          street: selectedAddress.street,
-          city: selectedAddress.city,
-          state: selectedAddress.state,
-          phone: selectedAddress.phone,
-          Landmark: selectedAddress.landmark,
-          pincode: selectedAddress.pincode,
-          streetAddress: selectedAddress.streetAddress,
-        },
-        paymentMethod: paymentDetails.method,
-        totalAmount: paymentDetails.totalAmount,
-      };
+const payload = {
+  orderItems: selectedProduct.map((item) => ({
+    productId: item.productId,
+    productName: item.name,
+    quantity: item.quantity,
+    price: item.price,
+    color: item.color,
+    size: item.size,
+    image: item.image, // ✅ added image
+  })),
+  shippingAddress: {
+    name: selectedAddress.name,
+    city: selectedAddress.city,
+    state: selectedAddress.state,
+    phone: selectedAddress.phone,
+    landmark: selectedAddress.landmark,
+    pincode: selectedAddress.pincode, // ✅ must be Number (if schema has Number)
+    streetAddress: selectedAddress.streetAddress,
+    country: selectedAddress.country, // ✅ added country
+  },
+  paymentMethod: paymentDetails.method,
+  totalAmount: paymentDetails.totalAmount,
+};
+
 
       const token = localStorage.getItem("token");
 
       const res = await axios.post(
-        "https://jodiacbackend.onrender.com/api/Orders/createOrders",
+        "http://localhost:4000/api/Orders/createOrders",
         payload,
         {
           headers: {
