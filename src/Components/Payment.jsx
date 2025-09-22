@@ -9,27 +9,96 @@ export default function Payment({ onPaymentSuccess }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [orderData, setOrderData] = useState([]);
-  const navigate = useNavigate();
+  const [shippingAddress, setShippingAddress] = useState({
+    name: "",
+    phone: "",
+    streetAddress: "",
+    landmark: "",
+    city: "",
+    state: "",
+    pincode: "",
+  });
 
-  // Load selected products from localStorage
+  const navigate = useNavigate();
+  const userId = localStorage.getItem("userId") || "test-user-id";
+  console.log("User ID:", userId);
+  console.log("Shipping Address:", shippingAddress);
+
+
+  // Load selected products and shipping address
   useEffect(() => {
-    const storedOrder = JSON.parse(localStorage.getItem("selectedProduct"));
-    if (storedOrder) {
-      setOrderData(storedOrder);
-    }
+    const storedOrder = JSON.parse(localStorage.getItem("selectedProduct")) || [];
+    setOrderData(storedOrder);
+
+    const storedAddress = JSON.parse(localStorage.getItem("shippingAddress"));
+    if (storedAddress) setShippingAddress(storedAddress);
   }, []);
 
   // Calculate totals
-  const subtotal = orderData.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
+  const subtotal = orderData.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const totalDiscount = orderData.reduce(
-    (acc, item) =>
-      acc + (item.price * item.quantity * (item.discount || 0)) / 100,
+    (acc, item) => acc + ((item.price * item.quantity * (item.discount || 0)) / 100),
     0
   );
   const finalTotal = subtotal - totalDiscount;
+
+  // Load Razorpay SDK
+  const loadRazorpayScript = () =>
+    new Promise((resolve) => {
+      if (document.getElementById("razorpay-sdk")) return resolve(true);
+      const script = document.createElement("script");
+      script.id = "razorpay-sdk";
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+
+  const openRazorpay = (order) => {
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: order.amount,
+      currency: order.currency,
+      name: "Jodiac",
+      description: "Order Payment",
+      order_id: order.razorpayOrderId,
+      handler: async (response) => {
+        try {
+          const verifyRes = await fetch("http://localhost:4000/api/payment/verify-payment", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...response,
+              orderData,
+              shippingAddress,
+              userId: localStorage.getItem("userId"),
+              paymentMethod: paymentMethod === "upi" ? "UPI" : paymentMethod === "card" ? "Card" : "Other",
+            }),
+          }); 
+
+          const data = await verifyRes.json();
+          if (data.success) {
+            localStorage.setItem(
+              "paymentDetails",
+              JSON.stringify({ method: paymentMethod, totalAmount: finalTotal, status: "success" })
+            );
+            setMessage("✅ Payment successful!");
+            if (onPaymentSuccess) onPaymentSuccess();
+            navigate("/review");
+          } else {
+            setMessage("❌ Payment verification failed.");
+          }
+        } catch (err) {
+          console.error(err);
+          setMessage("❌ Error verifying payment.");
+        }
+      },
+      theme: { color: "#f59e0b" },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  };
 
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
@@ -43,42 +112,67 @@ export default function Payment({ onPaymentSuccess }) {
         return;
       }
 
-      // If UPI or Card → show "working on it"
-      if (paymentMethod === "upi" || paymentMethod === "card") {
-        setMessage("⚠️ We are working on this method, please choose Cash on Delivery instead.");
-        setLoading(false);
-        return;
-      }
-
-      // If COD → proceed and save details
       if (paymentMethod === "cod") {
         setTimeout(() => {
           setLoading(false);
           setMessage("✅ Cash on Delivery selected successfully!");
-          navigate("/review");
           localStorage.setItem(
             "paymentDetails",
-            JSON.stringify({
-              method: "Cash on Delivery",
-              totalAmount: finalTotal,
-              status: "success",
-            })
+            JSON.stringify({ method: "Cash on Delivery", totalAmount: finalTotal, status: "success" })
           );
-          if (onPaymentSuccess) {
-            onPaymentSuccess();
-          }
-        }, 1000);
+          if (onPaymentSuccess) onPaymentSuccess();
+          navigate("/review");
+        }, 500);
+        return;
       }
-    } catch (error) {
-      console.error("Error:", error);
+
+      if (paymentMethod === "upi" && !upiId.trim()) {
+        setMessage("⚠️ Please enter your UPI ID.");
+        setLoading(false);
+        return;
+      }
+
+      // Validate shipping address
+      for (const key in shippingAddress) {
+        if (!shippingAddress[key]) {
+          setMessage(`⚠️ Please fill your ${key}.`);
+          setLoading(false);
+          return;
+        }
+      }
+
+      const isRazorpayLoaded = await loadRazorpayScript();
+      if (!isRazorpayLoaded) {
+        setMessage("❌ Failed to load Razorpay SDK.");
+        setLoading(false);
+        return;
+      }
+
+      const res = await fetch("http://localhost:4000/api/payment/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: finalTotal * 100 }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setMessage("❌ Failed to create order.");
+        setLoading(false);
+        return;
+      }
+
+      openRazorpay(data);
+    } catch (err) {
+      console.error(err);
       setMessage("❌ Something went wrong. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">
-      {/* Left Section - Order Summary */}
+      {/* Order Summary */}
       <motion.div
         initial={{ x: -50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
@@ -86,23 +180,15 @@ export default function Payment({ onPaymentSuccess }) {
         className="lg:w-1/2 bg-gradient-to-br from-yellow-600 to-yellow-800 text-white flex flex-col justify-center items-center p-12"
       >
         <h1 className="text-4xl font-bold mb-4">Checkout Summary</h1>
-        <p className="text-lg opacity-90 mb-6">
-          Review your order before payment
-        </p>
-
+        <p className="text-lg opacity-90 mb-6">Review your order before payment</p>
         <div className="bg-white/20 backdrop-blur-md rounded-2xl shadow-lg p-6 w-full max-w-md max-h-[300px] overflow-y-auto">
           {orderData.length > 0 ? (
             <>
               {orderData.map((item, idx) => {
                 const itemTotal =
-                  item.price * item.quantity -
-                  (item.price * item.quantity * (item.discount || 0)) / 100;
-
+                  item.price * item.quantity - (item.price * item.quantity * (item.discount || 0)) / 100;
                 return (
-                  <div
-                    key={idx}
-                    className="flex justify-between items-center border-b border-white/30 py-2"
-                  >
+                  <div key={idx} className="flex justify-between items-center border-b border-white/30 py-2">
                     <div>
                       <p className="font-semibold">{item.name}</p>
                       <p className="text-sm opacity-80">
@@ -113,8 +199,6 @@ export default function Payment({ onPaymentSuccess }) {
                   </div>
                 );
               })}
-
-              {/* Totals */}
               <div className="mt-4 space-y-1 text-lg">
                 <div className="flex justify-between">
                   <span>Subtotal:</span>
@@ -136,22 +220,17 @@ export default function Payment({ onPaymentSuccess }) {
         </div>
       </motion.div>
 
-      {/* Right Section - Payment Form */}
+      {/* Payment Form */}
       <motion.div
         initial={{ x: 50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.6 }}
         className="lg:w-1/2 flex justify-center items-center p-8"
       >
-        <form
-          onSubmit={handlePaymentSubmit}
-          className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-lg"
-        >
-          <h2 className="text-2xl font-semibold mb-6 text-gray-800">
-            Select Payment Method
-          </h2>
+        <form onSubmit={handlePaymentSubmit} className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-lg">
+          <h2 className="text-2xl font-semibold mb-6 text-gray-800">Select Payment Method</h2>
 
-          {/* UPI Option */}
+          {/* UPI */}
           <div className="border p-4 rounded-lg flex flex-col space-y-3 mb-4 hover:shadow-md transition">
             <label className="flex items-center space-x-3 cursor-pointer">
               <input
@@ -176,7 +255,7 @@ export default function Payment({ onPaymentSuccess }) {
             )}
           </div>
 
-          {/* Cash on Delivery */}
+          {/* COD */}
           <div className="border p-4 rounded-lg flex items-center space-x-3 mb-4 hover:shadow-md transition">
             <input
               type="radio"
@@ -190,7 +269,7 @@ export default function Payment({ onPaymentSuccess }) {
             <span className="text-gray-700">Cash on Delivery</span>
           </div>
 
-          {/* Card Option */}
+          {/* Card */}
           <div className="border p-4 rounded-lg flex items-center space-x-3 mb-6 hover:shadow-md transition">
             <input
               type="radio"
@@ -208,22 +287,14 @@ export default function Payment({ onPaymentSuccess }) {
             type="submit"
             disabled={loading}
             className={`w-full py-3 px-6 rounded-lg text-white font-semibold transition ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-yellow-600 hover:bg-yellow-700"
+              loading ? "bg-gray-400 cursor-not-allowed" : "bg-yellow-600 hover:bg-yellow-700"
             }`}
           >
-            {loading ? "Processing..." : "Continue to Review"}
+            {loading ? "Processing..." : "Continue to Pay"}
           </button>
 
           {message && (
-            <p
-              className={`mt-4 text-center font-medium ${
-                message.includes("success")
-                  ? "text-green-600"
-                  : "text-red-600"
-              }`}
-            >
+            <p className={`mt-4 text-center font-medium ${message.includes("success") ? "text-green-600" : "text-red-600"}`}>
               {message}
             </p>
           )}

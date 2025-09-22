@@ -58,7 +58,7 @@ const DashboardCards = ({ onActiveOrdersClick }) => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: i * 0.15 }}
           whileHover={{ scale: 1.05, boxShadow: "0px 8px 20px rgba(0,0,0,0.15)" }}
-          className="bg-[#f2e8cf] p-6 rounded-2xl border border-[#d9c8a9] shadow-md cursor-pointer transition-all"
+          className="bg-[#f2e8cf] p-6 rounded-2xl border shadow-md cursor-pointer transition-all"
           onClick={() => {
             if (card.isActive) onActiveOrdersClick();
           }}

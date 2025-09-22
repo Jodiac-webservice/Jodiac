@@ -4,7 +4,6 @@ import DashboardCards from "../Components/DashboardCards";
 import ActiveOrders from "../Components/ActiveOrders";
 // TODO: create these
 import Products from "../Components/Products";
-import Users from "../Components/Users";
 import Analytics from "../Components/Analytics";
 import Settings from "../Components/Settings";
 
