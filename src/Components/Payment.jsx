@@ -25,6 +25,7 @@ export default function Payment({ onPaymentSuccess }) {
   console.log("Shipping Address:", shippingAddress);
 
 
+
   // Load selected products and shipping address
   useEffect(() => {
     const storedOrder = JSON.parse(localStorage.getItem("selectedProduct")) || [];
@@ -36,11 +37,17 @@ export default function Payment({ onPaymentSuccess }) {
 
   // Calculate totals
   const subtotal = orderData.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const totalDiscount = orderData.reduce(
-    (acc, item) => acc + ((item.price * item.quantity * (item.discount || 0)) / 100),
-    0
-  );
-  const finalTotal = subtotal - totalDiscount;
+const totalDiscount = orderData.reduce(
+  (acc, item) => acc + ((item.price * item.quantity * (item.discount || 0)) / 100),
+  0
+);
+const finalTotal = subtotal - totalDiscount;
+console.log
+// Prevent sending invalid amount
+if (!finalTotal || finalTotal <= 0) {
+  console.warn("Final total is invalid:", finalTotal);
+}
+
 
   // Load Razorpay SDK
   const loadRazorpayScript = () =>
@@ -72,6 +79,7 @@ export default function Payment({ onPaymentSuccess }) {
               orderData,
               shippingAddress,
               userId: localStorage.getItem("userId"),
+              totalAmount: finalTotal,
               paymentMethod: paymentMethod === "upi" ? "UPI" : paymentMethod === "card" ? "Card" : "Other",
             }),
           }); 
@@ -101,74 +109,89 @@ export default function Payment({ onPaymentSuccess }) {
   };
 
   const handlePaymentSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
+  e.preventDefault();
+  setLoading(true);
+  setMessage("");
 
-    try {
-      if (!paymentMethod) {
-        setMessage("⚠️ Please select a payment method.");
-        setLoading(false);
-        return;
-      }
+  // Recalculate totals here
+  const subtotal = orderData.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const totalDiscount = orderData.reduce(
+    (acc, item) => acc + ((item.price * item.quantity * (item.discount || 0)) / 100),
+    0
+  );
+  const finalTotal = subtotal - totalDiscount;
 
-      if (paymentMethod === "cod") {
-        setTimeout(() => {
-          setLoading(false);
-          setMessage("✅ Cash on Delivery selected successfully!");
-          localStorage.setItem(
-            "paymentDetails",
-            JSON.stringify({ method: "Cash on Delivery", totalAmount: finalTotal, status: "success" })
-          );
-          if (onPaymentSuccess) onPaymentSuccess();
-          navigate("/review");
-        }, 500);
-        return;
-      }
+  if (!finalTotal || finalTotal <= 0) {
+    setMessage("⚠️ Invalid order total.");
+    setLoading(false);
+    return;
+  }
 
-      if (paymentMethod === "upi" && !upiId.trim()) {
-        setMessage("⚠️ Please enter your UPI ID.");
-        setLoading(false);
-        return;
-      }
-
-      // Validate shipping address
-      for (const key in shippingAddress) {
-        if (!shippingAddress[key]) {
-          setMessage(`⚠️ Please fill your ${key}.`);
-          setLoading(false);
-          return;
-        }
-      }
-
-      const isRazorpayLoaded = await loadRazorpayScript();
-      if (!isRazorpayLoaded) {
-        setMessage("❌ Failed to load Razorpay SDK.");
-        setLoading(false);
-        return;
-      }
-
-      const res = await fetch("http://localhost:4000/api/payment/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: finalTotal * 100 }),
-      });
-
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        setMessage("❌ Failed to create order.");
-        setLoading(false);
-        return;
-      }
-
-      openRazorpay(data);
-    } catch (err) {
-      console.error(err);
-      setMessage("❌ Something went wrong. Please try again.");
-    } finally {
+  try {
+    if (!paymentMethod) {
+      setMessage("⚠️ Please select a payment method.");
       setLoading(false);
+      return;
     }
-  };
+
+    if (paymentMethod === "cod") {
+      setTimeout(() => {
+        setLoading(false);
+        setMessage("✅ Cash on Delivery selected successfully!");
+        localStorage.setItem(
+          "paymentDetails",
+          JSON.stringify({ method: "Cash on Delivery", totalAmount: finalTotal, status: "success" })
+        );
+        if (onPaymentSuccess) onPaymentSuccess();
+        navigate("/review");
+      }, 500);
+      return;
+    }
+
+    if (paymentMethod === "upi" && !upiId.trim()) {
+      setMessage("⚠️ Please enter your UPI ID.");
+      setLoading(false);
+      return;
+    }
+
+    // Validate shipping address
+    for (const key in shippingAddress) {
+      if (!shippingAddress[key]) {
+        setMessage(`⚠️ Please fill your ${key}.`);
+        setLoading(false);
+        return;
+      }
+    }
+
+    const isRazorpayLoaded = await loadRazorpayScript();
+    if (!isRazorpayLoaded) {
+      setMessage("❌ Failed to load Razorpay SDK.");
+      setLoading(false);
+      return;
+    }
+
+    const res = await fetch("http://localhost:4000/api/payment/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: finalTotal * 100 }), // send in paise
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      setMessage("❌ Failed to create order.");
+      setLoading(false);
+      return;
+    }
+
+    openRazorpay({ ...data, finalTotal }); // pass finalTotal explicitly
+  } catch (err) {
+    console.error(err);
+    setMessage("❌ Something went wrong. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50">

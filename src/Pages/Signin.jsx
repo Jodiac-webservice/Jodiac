@@ -42,7 +42,7 @@ const handleSignIn = async (e) => {
 
     // Save token
     localStorage.setItem("token", data.accessToken);
-    localStorage.setItem("userId", data.userId);
+    localStorage.setItem("userId", data.id);
 
     // ✅ Check role directly
     if (data.role === "admin") {

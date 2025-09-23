@@ -38,6 +38,7 @@ export default function Ordersummary() {
     0
   );
   const finalTotal = subtotal - totalDiscount;
+  
 
   return (
     <div className="flex justify-center items-center w-full py-10">

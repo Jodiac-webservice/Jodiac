@@ -15,7 +15,7 @@ export default function Review() {
   useEffect(() => {
     const payment = JSON.parse(localStorage.getItem("paymentDetails"));
     const products = JSON.parse(localStorage.getItem("selectedProduct"));
-    const address = JSON.parse(localStorage.getItem("selectedAddress"));
+    const address = JSON.parse(localStorage.getItem("shippingAddress"));
 
     if (payment) setPaymentDetails(payment);
     if (products) setSelectedProduct(products);
@@ -38,23 +38,27 @@ const payload = {
     productName: item.name,
     quantity: item.quantity,
     price: item.price,
-    color: item.color,
-    size: item.size,
-    image: item.image, // ✅ added image
+    color: item.color || "Default Color",
+    size: item.size || "Default Size",
   })),
   shippingAddress: {
     name: selectedAddress.name,
+    phone: selectedAddress.phone,
+    streetAddress: selectedAddress.streetAddress,
+    landmark: selectedAddress.landmark,
     city: selectedAddress.city,
     state: selectedAddress.state,
-    phone: selectedAddress.phone,
-    landmark: selectedAddress.landmark,
-    pincode: selectedAddress.pincode, // ✅ must be Number (if schema has Number)
-    streetAddress: selectedAddress.streetAddress,
-    country: selectedAddress.country, // ✅ added country
+    pincode: Number(selectedAddress.pincode),
   },
-  paymentMethod: paymentDetails.method,
+  paymentMethod:
+    paymentDetails.method === "upi"
+      ? "UPI"
+      : paymentDetails.method === "cod"
+      ? "Cash on Delivery"
+      : paymentDetails.method,
   totalAmount: paymentDetails.totalAmount,
 };
+
 
 
       const token = localStorage.getItem("token");
@@ -101,15 +105,16 @@ const payload = {
             Delivery Address
           </h2>
           {selectedAddress ? (
-            <div className="text-gray-600">
-              <p>{selectedAddress.name}</p>
-              <p>{selectedAddress.street}, {selectedAddress.city}</p>
-              <p>{selectedAddress.state} - {selectedAddress.landmark}</p>
-              <p>Phone: {selectedAddress.phone}</p>
-            </div>
-          ) : (
-            <p className="text-gray-400">No address selected.</p>
-          )}
+  <div>
+    <p>{selectedAddress.name}</p>
+    <p>{selectedAddress.streetAddress}, {selectedAddress.city}</p>
+    <p>{selectedAddress.state} - {selectedAddress.pincode}</p>
+    <p>Phone: {selectedAddress.phone}</p>
+  </div>
+) : (
+  <p>No address selected</p>
+)}
+
         </div>
 
         {/* --- Products Card --- */}
