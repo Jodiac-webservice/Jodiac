@@ -71,7 +71,7 @@ if (!finalTotal || finalTotal <= 0) {
       order_id: order.razorpayOrderId,
       handler: async (response) => {
         try {
-          const verifyRes = await fetch("http://localhost:4000/api/payment/verify-payment", {
+          const verifyRes = await fetch("https://jodiacbackend.onrender/api/payment/verify-payment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -170,7 +170,7 @@ if (!finalTotal || finalTotal <= 0) {
       return;
     }
 
-    const res = await fetch("http://localhost:4000/api/payment/create-order", {
+    const res = await fetch("https://jodiacbackend.onrender/api/payment/create-order", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ amount: finalTotal * 100 }), // send in paise
