@@ -64,7 +64,7 @@ const payload = {
       const token = localStorage.getItem("token");
 
       const res = await axios.post(
-        "https://jodiacbackend.onrender/api/Orders/createOrders",
+        "https://jodiacbackend.onrender.com/api/Orders/createOrders",
         payload,
         {
           headers: {
