@@ -22,6 +22,19 @@ export default function Review() {
     if (address) setSelectedAddress(address);
   }, []);
 
+  const mergeProducts = (products) => {
+    const merged = [];
+    products.forEach((item) => {
+      const existing = merged.find((p) => p.productId === item.productId);
+      if (existing) {
+        existing.quantity += item.quantity; // Combine quantity
+      } else {
+        merged.push({ ...item });
+      }
+    });
+    return merged;
+  };
+
   const handleConfirmOrder = async () => {
     if (!paymentDetails || !selectedProduct || !selectedAddress) {
       setMessage("⚠️ Missing order details.");
@@ -32,34 +45,36 @@ export default function Review() {
     setMessage("");
 
     try {
-const payload = {
-  orderItems: selectedProduct.map((item) => ({
-    productId: item.productId,
-    productName: item.name,
-    quantity: item.quantity,
-    price: item.price,
-    color: item.color || "Default Color",
-    size: item.size || "Default Size",
-  })),
-  shippingAddress: {
-    name: selectedAddress.name,
-    phone: selectedAddress.phone,
-    streetAddress: selectedAddress.streetAddress,
-    landmark: selectedAddress.landmark,
-    city: selectedAddress.city,
-    state: selectedAddress.state,
-    pincode: Number(selectedAddress.pincode),
-  },
-  paymentMethod:
-    paymentDetails.method === "upi"
-      ? "UPI"
-      : paymentDetails.method === "cod"
-      ? "Cash on Delivery"
-      : paymentDetails.method,
-  totalAmount: paymentDetails.totalAmount,
-};
+      // Merge duplicate SKUs
+      const mergedProducts = mergeProducts(selectedProduct);
 
-
+      const payload = {
+        orderItems: mergedProducts.map((item) => ({
+          productId: item.productId,
+          productName: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          color: item.color || "Default Color",
+          size: item.size || "Default Size",
+        })),
+        shippingAddress: {
+          name: selectedAddress.name,
+          phone: selectedAddress.phone,
+          streetAddress: selectedAddress.streetAddress,
+          landmark: selectedAddress.landmark,
+          city: selectedAddress.city,
+          state: selectedAddress.state,
+          pincode: Number(selectedAddress.pincode),
+          country: selectedAddress.country || "India",
+        },
+        paymentMethod:
+          paymentDetails.method === "upi"
+            ? "UPI"
+            : paymentDetails.method === "cod"
+            ? "Cash on Delivery"
+            : paymentDetails.method,
+        totalAmount: paymentDetails.totalAmount,
+      };
 
       const token = localStorage.getItem("token");
 
@@ -79,11 +94,10 @@ const payload = {
       // Clear cart
       localStorage.removeItem("selectedProduct");
       localStorage.removeItem("paymentDetails");
-      localStorage.removeItem("selectedAddress");
+      localStorage.removeItem("shippingAddress");
 
       // Show thank you popup
       setShowPopup(true);
-
     } catch (err) {
       console.error("Error placing order:", err);
       setMessage("❌ Failed to place order. Please try again.");
@@ -99,25 +113,28 @@ const payload = {
       </h1>
 
       <div className="grid gap-6 w-full max-w-3xl">
-        {/* --- Address Card --- */}
+        {/* Address Card */}
         <div className="bg-white rounded-xl shadow-md p-6">
           <h2 className="text-xl font-semibold text-gray-700 mb-4">
             Delivery Address
           </h2>
           {selectedAddress ? (
-  <div>
-    <p>{selectedAddress.name}</p>
-    <p>{selectedAddress.streetAddress}, {selectedAddress.city}</p>
-    <p>{selectedAddress.state} - {selectedAddress.pincode}</p>
-    <p>Phone: {selectedAddress.phone}</p>
-  </div>
-) : (
-  <p>No address selected</p>
-)}
-
+            <div>
+              <p>{selectedAddress.name}</p>
+              <p>
+                {selectedAddress.streetAddress}, {selectedAddress.city}
+              </p>
+              <p>
+                {selectedAddress.state} - {selectedAddress.pincode}
+              </p>
+              <p>Phone: {selectedAddress.phone}</p>
+            </div>
+          ) : (
+            <p>No address selected</p>
+          )}
         </div>
 
-        {/* --- Products Card --- */}
+        {/* Products Card */}
         <div className="bg-white rounded-xl shadow-md p-6">
           <h2 className="text-xl font-semibold text-gray-700 mb-4">
             Ordered Products
@@ -128,7 +145,6 @@ const payload = {
                 const itemTotal =
                   item.price * item.quantity -
                   (item.price * item.quantity * (item.discount || 0)) / 100;
-
                 return (
                   <div
                     key={idx}
@@ -150,7 +166,7 @@ const payload = {
           )}
         </div>
 
-        {/* --- Payment Card --- */}
+        {/* Payment Card */}
         <div className="bg-white rounded-xl shadow-md p-6">
           <h2 className="text-xl font-semibold text-gray-700 mb-4">
             Payment Details
@@ -175,23 +191,23 @@ const payload = {
           )}
         </div>
 
-        {/* --- Confirm Button --- */}
+        {/* Confirm Button */}
         <button
           onClick={handleConfirmOrder}
           disabled={loading}
           className={`${
-            loading ? "bg-gray-400 cursor-not-allowed" : "bg-yellow-600 hover:bg-yellow-700"
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-yellow-600 hover:bg-yellow-700"
           } text-white font-semibold py-3 rounded-xl shadow-md transition`}
         >
           {loading ? "Placing Order..." : "Confirm Order"}
         </button>
 
-        {message && (
-          <p className="text-center font-medium mt-4">{message}</p>
-        )}
+        {message && <p className="text-center font-medium mt-4">{message}</p>}
       </div>
 
-      {/* --- Success Popup --- */}
+      {/* Success Popup */}
       {showPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
           <div className="bg-white rounded-xl shadow-lg p-8 text-center max-w-sm">
