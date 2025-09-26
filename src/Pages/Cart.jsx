@@ -21,7 +21,7 @@ const Cart = () => {
       return;
     }
     try {
-      const res = await fetch("https://jodiacbackend.onrender.com/api/cart", {
+      const res = await fetch("http://68.183.86.102/api/cart", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -50,7 +50,7 @@ const Cart = () => {
     }
 
     try {
-      const res = await fetch("https://jodiacbackend.onrender.com/api/cart/remove", {
+      const res = await fetch("http://68.183.86.102/api/cart/remove", {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

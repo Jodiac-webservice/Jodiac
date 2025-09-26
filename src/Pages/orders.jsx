@@ -19,7 +19,7 @@ const Orders = () => {
                     setIsLoading(false);
                     return;
                 }
-                const response = await fetch("https://jodiacbackend.onrender.com/api/orders", {
+                const response = await fetch("http://68.183.86.102/api/orders", {
                     method: "GET",
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -48,7 +48,7 @@ const Orders = () => {
         try {
             const token = localStorage.getItem("token");
             const response = await fetch(
-                `https://jodiacbackend.onrender.com/api/Orders/status/${orderId}`,
+                `http://68.183.86.102/api/Orders/status/${orderId}`,
                 {
                     method: "GET",
                     headers: {
