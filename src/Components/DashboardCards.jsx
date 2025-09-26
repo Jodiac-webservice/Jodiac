@@ -9,7 +9,7 @@ const DashboardCards = ({ onActiveOrdersClick }) => {
 
   // 🔹 Fetch Active Orders
   useEffect(() => {
-    fetch("https://jodiacbackend.onrender.com/api/getActiveOrders")
+    fetch("https://jodiacxthreadorabackend.store/api/getActiveOrders")
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -21,7 +21,7 @@ const DashboardCards = ({ onActiveOrdersClick }) => {
 
   // 🔹 Fetch Revenue
   useEffect(() => {
-    fetch("https://jodiacbackend.onrender.com/api/getRevenue")
+    fetch("https://jodiacxthreadorabackend.store/api/getRevenue")
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -33,7 +33,7 @@ const DashboardCards = ({ onActiveOrdersClick }) => {
 
   // 🔹 Fetch Profit Margin
   useEffect(() => {
-    fetch("https://jodiacbackend.onrender.com/api/getRevenueAndCost")
+    fetch("https://jodiacxthreadorabackend.store/api/getRevenueAndCost")
       .then(res => res.json())
       .then(data => {
         if (data.success) {

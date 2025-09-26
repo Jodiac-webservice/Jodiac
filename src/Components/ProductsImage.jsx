@@ -16,7 +16,7 @@ const ProductsImage = () => {
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const res = await axios.get(`https://jodiacbackend.onrender.com/api/product/${id}`);
+        const res = await axios.get(`https://jodiacxthreadorabackend.store/api/product/${id}`);
         setProduct(res.data.product);
       } catch (err) {
         setError("Something went wrong while fetching product details.",err);

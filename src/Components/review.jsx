@@ -79,7 +79,7 @@ export default function Review() {
       const token = localStorage.getItem("token");
 
       const res = await axios.post(
-        "https://jodiacbackend.onrender.com/api/Orders/createOrders",
+        "https://jodiacxthreadorabackend.store/api/Orders/createOrders",
         payload,
         {
           headers: {

@@ -9,7 +9,7 @@ const NewArrival = () => {
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const response = await axios.get('https://jodiacbackend.onrender.com/api/productdetails/getproduct');
+        const response = await axios.get('https://jodiacxthreadorabackend.store/api/productdetails/getproduct');
         setProducts(response.data);
       } catch (error) {
         console.error('Error fetching products:', error);

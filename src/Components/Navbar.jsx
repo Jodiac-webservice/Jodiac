@@ -24,7 +24,7 @@ const Navbar = () => {
         }
 
         // Fetch user data
-        const userResponse = await fetch("https://jodiacbackend.onrender.com/api/auth/getuser", {
+        const userResponse = await fetch("https://jodiacxthreadorabackend.store/api/auth/getuser", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -37,7 +37,7 @@ const Navbar = () => {
         }
 
         // Fetch cart data to get quantity
-        const cartResponse = await fetch("https://jodiacbackend.onrender.com/api/cart", {
+        const cartResponse = await fetch("https://jodiacxthreadorabackend.store/api/cart", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,

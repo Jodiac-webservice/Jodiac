@@ -18,7 +18,7 @@ export default function ExistingAddress({ onDeliverHere }) {
     const fetchAddresses = async () => {
       setLoading(true);
       try {
-        const res = await fetch("https://jodiacbackend.onrender.com/api/Shipping/Getaddress", {
+        const res = await fetch("https://jodiacxthreadorabackend.store/api/Shipping/Getaddress", {
           method: "GET",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         });
