@@ -16,7 +16,7 @@ const Accounts = () => {
     posthog.capture('signup_attempt', { method: 'email' });
 
     try {
-      const response = await fetch('http://68.183.86.102/api/auth/signup', {
+      const response = await fetch('https://jodiacbackend.onrender.com/api/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

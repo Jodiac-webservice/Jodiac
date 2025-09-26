@@ -1,7 +1,7 @@
   import React, { useState, useEffect } from "react";
   import axios from "axios";
 
-  const API_BASE = "http://68.183.86.102/api/productdetails";
+  const API_BASE = "https://jodiacbackend.onrender.com/api/productdetails";
 
   const Products = () => {
     const [products, setProducts] = useState([]);
