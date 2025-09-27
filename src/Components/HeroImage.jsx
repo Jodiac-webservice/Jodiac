@@ -27,13 +27,13 @@ const HeroImage = () => {
   };
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-black">
+    <div className="relative w-full min-h-screen h-screen overflow-hidden bg-black">
       {/* Background Images */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 w-full h-full">
         {heroImages.map((img, idx) => (
           <div
             key={idx}
-            className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
+            className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out ${
               idx === currentImageIndex ? "opacity-100 scale-100" : "opacity-0 scale-105"
             }`}
             style={{
@@ -47,11 +47,11 @@ const HeroImage = () => {
       </div>
 
       {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-10" />
+      <div className="absolute inset-0 w-full h-full bg-gradient-to-t from-black/80 via-black/30 to-transparent z-10" />
 
       {/* Content */}
-      <div className="absolute inset-0 flex flex-col items-start justify-end z-30 px-6 sm:px-10 md:px-16 pb-12 sm:pb-20 md:pb-28 max-w-screen-xl mx-auto">
-        <div className="max-w-xl w-full">
+      <div className="absolute inset-0 flex flex-col items-start justify-end z-30 px-4 sm:px-8 md:px-16 pb-12 sm:pb-20 md:pb-28 w-full">
+        <div className="w-full">
           {/* Heading */}
           <h1
             className={`text-white font-black leading-tight mb-4 sm:mb-6 md:mb-8 transform transition-all duration-1000 ${
