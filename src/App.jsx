@@ -10,6 +10,12 @@ import Payment from './Components/Payment';
 import Review from './Components/review';
 import AdminPanel from './Pages/AdminPanel';
 import Orders from './Pages/orders';
+import ShippingPolicy from './Pages/Shipping';
+import PrivacyPolicy from './Pages/Privacy';
+import Terms from './Pages/Terms';
+import AboutUs from './Pages/AboutUs';
+import ContactUs from './Pages/ContactUs';
+import RefundPolicy from './Pages/Refund';
 import './App.css'
 
 function App() {
@@ -26,6 +32,12 @@ function App() {
         <Route path='/review' element={<Review/>}/>
         <Route path='/AdminPanel' element={<AdminPanel/>}/>
         <Route path='/orders' element={<Orders/>}/>
+        <Route path='/ShippingPolicy' element={<ShippingPolicy/>}/>
+        <Route path='/PrivacyPolicy' element={<PrivacyPolicy/>}/>
+        <Route path='/Terms' element={<Terms/>}/>
+        <Route path='/AboutUs' element={<AboutUs/>}/>
+        <Route path='/ContactUs' element={<ContactUs/>}/>
+        <Route path='/RefundPolicy' element={<RefundPolicy/>}/>
       </Routes>
     </BrowserRouter>
   )

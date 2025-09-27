@@ -24,7 +24,7 @@ const NewArrival = () => {
   };
 
   return (
-    <div className="bg-white py-12 px-4 sm:px-6 md:px-12 lg:px-20">
+    <div id="newarrival-section" className="bg-white py-12 px-4 sm:px-6 md:px-12 lg:px-20">
       <h2 className="text-3xl sm:text-4xl text-left font-extrabold text-gray-900 mb-8 sm:mb-12">
         New Arrivals
       </h2>

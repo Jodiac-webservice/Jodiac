@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams,useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Share2,
   Heart,
@@ -32,7 +32,9 @@ function ProductsDetails() {
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const res = await axios.get(`https://jodiacxthreadorabackend.store/api/product/${id}`);
+        const res = await axios.get(
+          `https://jodiacxthreadorabackend.store/api/product/${id}`
+        );
         const data = res.data.product;
         setProduct(data);
 
@@ -94,31 +96,27 @@ function ProductsDetails() {
     }
   };
 
-const handleRedirect = () => {
-  const selectedProductDetails = {
-    productId: id,
-    name: product.name,
-    color: selectedColor,
-    size: selectedSize,
-    weight: selectedWeight,
-    quantity,
-    price: product.price,
-    discount: product.discount,
+  const handleRedirect = () => {
+    const selectedProductDetails = {
+      productId: id,
+      name: product.name,
+      color: selectedColor,
+      size: selectedSize,
+      weight: selectedWeight,
+      quantity,
+      price: product.price,
+      discount: product.discount,
+    };
+
+    const existingProducts =
+      JSON.parse(localStorage.getItem("selectedProduct")) || [];
+
+    const updatedProducts = [...existingProducts, selectedProductDetails];
+
+    localStorage.setItem("selectedProduct", JSON.stringify(updatedProducts));
+
+    navigate(`/checkout`);
   };
-
-  // Get any previously stored products
-  const existingProducts = JSON.parse(localStorage.getItem("selectedProduct")) || [];
-
-  // Store as an array
-  const updatedProducts = [...existingProducts, selectedProductDetails];
-
-  localStorage.setItem("selectedProduct", JSON.stringify(updatedProducts));
-
-  console.log("Selected product details saved:", updatedProducts);
-
-  navigate(`/checkout`);
-};
-
 
   const SelectionButtons = ({
     title,
@@ -128,32 +126,34 @@ const handleRedirect = () => {
     icon,
     colorPreview = false,
   }) => (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div className="flex items-center space-x-2">
         {icon}
-        <h3 className="text-lg font-bold text-gray-800">{title}</h3>
+        <h3 className="text-base sm:text-lg font-bold text-gray-800">
+          {title}
+        </h3>
       </div>
-      <div className="flex gap-3 flex-wrap transition-all duration-300">
+      <div className="flex gap-2 sm:gap-3 flex-wrap">
         {options?.map((opt, idx) => (
           <button
             key={idx}
             onClick={() => setSelected(opt)}
-            className={`group relative px-5 py-3 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 ${
+            className={`relative px-4 py-2 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl font-semibold text-sm sm:text-base transition-all ${
               selected === opt
-                ? "bg-gradient-to-r from-[#14213d] to-[#010646] text-[#e5e5e5] shadow-2xl shadow-indigo-300/50 scale-105"
-                : "bg-white text-gray-700 hover:bg-gray-50 border-2 border-gray-200 hover:border-indigo-300 shadow-lg hover:shadow-xl"
+                ? "bg-gradient-to-r from-[#14213d] to-[#010646] text-[#e5e5e5] shadow-lg scale-105"
+                : "bg-white text-gray-700 border border-gray-200 hover:border-indigo-300 shadow"
             }`}
           >
             {colorPreview && title.includes("Color") && (
               <div
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 rounded-full border-2 border-white shadow-sm"
+                className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 rounded-full border-2 border-white shadow-sm"
                 style={{ backgroundColor: opt }}
               />
             )}
-            <span className={colorPreview ? "ml-6" : ""}>{opt}</span>
+            <span className={colorPreview ? "ml-5 sm:ml-6" : ""}>{opt}</span>
             {selected === opt && (
-              <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                <CheckCircle className="w-4 h-4 text-white" />
+              <div className="absolute -top-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 bg-green-500 rounded-full flex items-center justify-center">
+                <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
               </div>
             )}
           </button>
@@ -165,15 +165,13 @@ const handleRedirect = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-50 via-white to-indigo-50">
-        <div className="flex flex-col items-center space-y-6">
-          <div className="relative">
-            <div className="w-20 h-20 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
-          </div>
+        <div className="flex flex-col items-center space-y-4 sm:space-y-6">
+          <div className="w-14 h-14 sm:w-20 sm:h-20 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
           <div className="text-center">
-            <h3 className="text-xl font-bold text-gray-800 mb-2">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-1 sm:mb-2">
               Loading Amazing Product
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 text-sm sm:text-base">
               Preparing the best experience for you...
             </p>
           </div>
@@ -182,180 +180,181 @@ const handleRedirect = () => {
     );
   }
 
-  if (error) return <div className="p-10 text-center text-red-500">{error}</div>;
-  if (!product) return <div className="p-10 text-center">No product found.</div>;
+  if (error) return <div className="p-6 sm:p-10 text-center text-red-500">{error}</div>;
+  if (!product) return <div className="p-6 sm:p-10 text-center">No product found.</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-indigo-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-indigo-50 py-6 sm:py-8 px-3 sm:px-4">
       <div className="max-w-5xl mx-auto">
         {/* Hero Section */}
-        <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 mb-8 border relative overflow-hidden">
-          <div className="relative z-10">
-            {/* Header */}
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-8 space-y-4 lg:space-y-0">
-              <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="flex items-center space-x-2 bg-gradient-to-r from-black to-[#14213d] text-white px-4 py-2 rounded-full">
-                    <Sparkles className="w-4 h-4" />
-                    <span className="text-sm font-bold">Premium Quality</span>
-                  </div>
-                  <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
-                    ✓ In Stock
-                  </div>
+        <div className="bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl p-5 sm:p-8 mb-6 sm:mb-8 border">
+          {/* Header */}
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6 sm:mb-8 space-y-4 lg:space-y-0">
+            <div className="flex-1">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+                <div className="flex items-center space-x-1 sm:space-x-2 bg-gradient-to-r from-black to-[#14213d] text-white px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm">
+                  <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="font-bold">Premium Quality</span>
                 </div>
-                <h1 className="text-5xl font-black mb-4 gradient-text leading-tight">
-                  {product.name}
-                </h1>
-                <ProductsImage product={product} />
-                {/* Rating */}
-                <div className="flex items-center gap-4 mb-4">
-                  {[1, 2, 3, 4, 5].map((num) => (
-                    <Star
-                      key={num}
-                      className={`w-6 h-6 ${
-                        num <= Math.round(product.rating)
-                          ? "text-yellow-400 fill-current"
-                          : "text-gray-300"
-                      }`}
-                    />
-                  ))}
-                  <span className="text-xl font-black text-gray-800">
-                    {product.rating} / 5.0
-                  </span>
+                <div className="bg-green-100 text-green-700 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-semibold">
+                  ✓ In Stock
                 </div>
               </div>
+              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black mb-3 sm:mb-4 gradient-text leading-tight">
+                {product.name}
+              </h1>
 
-              {/* Action Icons */}
-              <div className="flex space-x-3">
-                <button className="group w-14 h-14 flex items-center justify-center rounded-2xl bg-gray-100 hover:bg-indigo-100">
-                  <Share2 className="w-6 h-6 text-gray-600 group-hover:text-indigo-600" />
-                </button>
-                <button
-                  onClick={() => setIsLiked(!isLiked)}
-                  className={`group w-14 h-14 flex items-center justify-center rounded-2xl transition-all ${
-                    isLiked
-                      ? "bg-red-100 text-red-500"
-                      : "bg-gray-100 hover:bg-red-50 text-gray-600 hover:text-red-500"
-                  }`}
-                >
-                  <Heart
-                    className={`w-6 h-6 ${isLiked ? "fill-current" : ""}`}
+              {/* Product Images */}
+              <ProductsImage product={product} />
+
+              {/* Rating */}
+              <div className="flex items-center gap-2 sm:gap-4 mt-3 sm:mt-4 mb-3 sm:mb-4">
+                {[1, 2, 3, 4, 5].map((num) => (
+                  <Star
+                    key={num}
+                    className={`w-4 h-4 sm:w-6 sm:h-6 ${
+                      num <= Math.round(product.rating)
+                        ? "text-yellow-400 fill-current"
+                        : "text-gray-300"
+                    }`}
                   />
-                </button>
-              </div>
-            </div>
-
-            {/* Price */}
-            <div className="bg-gradient-to-r from-black via-[#14213d] to-[#e5e5e5] p-1 rounded-3xl mb-8">
-              <div className="bg-white rounded-3xl p-6 flex flex-wrap items-center justify-between">
-                <span className="text-4xl font-black text-gray-900">
-                  ₹{product.price.toLocaleString()}
+                ))}
+                <span className="text-sm sm:text-xl font-bold sm:font-black text-gray-800">
+                  {product.rating} / 5.0
                 </span>
-                <div className="flex items-center space-x-3">
-                  <div className="bg-gradient-to-r from-red-500 to-pink-600 text-white px-4 py-2 rounded-2xl font-bold text-lg">
-                    Save {product.discount}%
+              </div>
+            </div>
+
+            {/* Action Icons */}
+            <div className="flex space-x-2 sm:space-x-3">
+              <button className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-xl sm:rounded-2xl bg-gray-100 hover:bg-indigo-100">
+                <Share2 className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600 hover:text-indigo-600" />
+              </button>
+              <button
+                onClick={() => setIsLiked(!isLiked)}
+                className={`w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-xl sm:rounded-2xl ${
+                  isLiked
+                    ? "bg-red-100 text-red-500"
+                    : "bg-gray-100 hover:bg-red-50 text-gray-600 hover:text-red-500"
+                }`}
+              >
+                <Heart
+                  className={`w-5 h-5 sm:w-6 sm:h-6 ${isLiked ? "fill-current" : ""}`}
+                />
+              </button>
+            </div>
+          </div>
+
+          {/* Price */}
+          <div className="bg-gradient-to-r from-black via-[#14213d] to-[#e5e5e5] p-1 rounded-2xl sm:rounded-3xl mb-6 sm:mb-8">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
+              <span className="text-2xl sm:text-4xl font-black text-gray-900">
+                ₹{product.price.toLocaleString()}
+              </span>
+              <div className="flex flex-wrap items-center gap-2 sm:space-x-3">
+                <div className="bg-gradient-to-r from-red-500 to-pink-600 text-white px-3 sm:px-4 py-1 sm:py-2 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-lg">
+                  Save {product.discount}%
+                </div>
+                <div className="text-green-600 font-bold text-sm sm:text-lg">
+                  ₹{(product.oldprice - product.price).toLocaleString()} OFF
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Description */}
+          <div className="bg-gray-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8">
+            <p className="text-gray-700 leading-relaxed text-sm sm:text-lg font-medium">
+              {product.description}
+            </p>
+          </div>
+
+          {/* Selections */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
+            <div className="space-y-5 sm:space-y-6 text-[#14213d]">
+              <SelectionButtons
+                title="Choose Your Color"
+                options={product.color}
+                selected={selectedColor}
+                setSelected={setSelectedColor}
+                colorPreview={true}
+              />
+              <SelectionButtons
+                title="Select Perfect Size"
+                options={product.size}
+                selected={selectedSize}
+                setSelected={setSelectedSize}
+              />
+            </div>
+            <div className="space-y-5 sm:space-y-6 text-[#14213d]">
+              <SelectionButtons
+                title="Choose Weight Option"
+                options={product.weight}
+                selected={selectedWeight}
+                setSelected={setSelectedWeight}
+              />
+              {/* Quantity */}
+              <div className="space-y-3 sm:space-y-4">
+                <div className="flex items-center space-x-2">
+                  <Plus className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
+                  <h3 className="text-base sm:text-lg font-bold text-gray-800">
+                    Select Quantity
+                  </h3>
+                </div>
+                <div className="flex items-center space-x-3 sm:space-x-4">
+                  <div className="flex items-center bg-white border border-gray-200 rounded-xl sm:rounded-2xl p-2 shadow">
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-lg sm:rounded-xl bg-gray-100 hover:bg-indigo-100"
+                    >
+                      <Minus className="w-4 h-4 sm:w-5 sm:h-5" />
+                    </button>
+                    <div className="mx-4 sm:mx-6 text-xl sm:text-2xl font-black text-gray-800 min-w-[2.5rem] sm:min-w-[3rem] text-center">
+                      {quantity}
+                    </div>
+                    <button
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-lg sm:rounded-xl bg-gray-100 hover:bg-indigo-100"
+                    >
+                      <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                    </button>
                   </div>
-                  <div className="text-green-600 font-bold text-lg">
-                    ₹{(product.oldprice - product.price).toLocaleString()} OFF
+                  <div className="bg-indigo-50 text-indigo-700 px-3 sm:px-4 py-2 sm:py-3 rounded-xl sm:rounded-2xl text-xs sm:text-base">
+                    <span className="font-bold">
+                      Total: ₹{(product.price * quantity).toLocaleString()}
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Description */}
-            <div className="bg-gray-50 rounded-2xl p-6 mb-8">
-              <p className="text-gray-700 leading-relaxed text-lg font-medium">
-                {product.description}
-              </p>
-            </div>
-
-            {/* Selection */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
-              <div className="space-y-6 text-[#14213d]">
-                <SelectionButtons
-                  title="Choose Your Color"
-                  options={product.color}
-                  selected={selectedColor}
-                  setSelected={setSelectedColor}
-                  colorPreview={true}
-                />
-                <SelectionButtons
-                  title="Select Perfect Size"
-                  options={product.size}
-                  selected={selectedSize}
-                  setSelected={setSelectedSize}
-                />
-              </div>
-              <div className="space-y-6 text-[#14213d]">
-                <SelectionButtons
-                  title="Choose Weight Option"
-                  options={product.weight}
-                  selected={selectedWeight}
-                  setSelected={setSelectedWeight}
-                />
-                {/* Quantity */}
-                <div className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    <Plus className="w-5 h-5 text-green-500" />
-                    <h3 className="text-lg font-bold text-gray-800">
-                      Select Quantity
-                    </h3>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center bg-white border-2 border-gray-200 rounded-2xl p-2 shadow-lg">
-                      <button
-                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="w-12 h-12 flex items-center justify-center rounded-xl bg-gray-100 hover:bg-indigo-100"
-                      >
-                        <Minus className="w-5 h-5" />
-                      </button>
-                      <div className="mx-6 text-2xl font-black text-gray-800 min-w-[3rem] text-center">
-                        {quantity}
-                      </div>
-                      <button
-                        onClick={() => setQuantity(quantity + 1)}
-                        className="w-12 h-12 flex items-center justify-center rounded-xl bg-gray-100 hover:bg-indigo-100"
-                      >
-                        <Plus className="w-5 h-5" />
-                      </button>
-                    </div>
-                    <div className="bg-indigo-50 text-indigo-700 px-4 py-3 rounded-2xl">
-                      <span className="font-bold">
-                        Total: ₹{(product.price * quantity).toLocaleString()}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Buttons */}
-            <div className="flex flex-col lg:flex-row gap-4">
-              <button
-                onClick={handleAddToCart}
-                className="flex-1 group flex items-center justify-center space-x-3 px-8 py-5 rounded-2xl bg-gradient-to-r from-black to-[#14213d] text-[#fca311] font-bold text-lg shadow-xl"
-              >
-                <ShoppingCart className="w-6 h-6" />
-                <span>Add to Cart</span>
-              </button>
-              <button
-                onClick={handleRedirect}
-                className="flex-1 group flex items-center justify-center space-x-3 px-8 py-5 rounded-2xl bg-gradient-to-r from-gray-900 to-gray-700 text-white font-bold text-lg shadow-xl"
-              >
-                <Zap className="w-6 h-6" />
-                <span>Buy Now</span>
-              </button>
-            </div>
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <button
+              onClick={handleAddToCart}
+              className="flex-1 flex items-center justify-center space-x-2 sm:space-x-3 px-6 sm:px-8 py-4 sm:py-5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-black to-[#14213d] text-[#fca311] font-bold text-base sm:text-lg shadow-lg"
+            >
+              <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
+              <span>Add to Cart</span>
+            </button>
+            <button
+              onClick={handleRedirect}
+              className="flex-1 flex items-center justify-center space-x-2 sm:space-x-3 px-6 sm:px-8 py-4 sm:py-5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-gray-900 to-gray-700 text-white font-bold text-base sm:text-lg shadow-lg"
+            >
+              <Zap className="w-5 h-5 sm:w-6 sm:h-6" />
+              <span>Buy Now</span>
+            </button>
           </div>
         </div>
 
         {/* Cart Summary */}
         {cartItems.length > 0 && (
-          <div className="bg-green-50 border border-green-200 rounded-2xl p-6 mb-6">
-            <h3 className="text-lg font-bold text-green-800 mb-2">
+          <div className="bg-green-50 border border-green-200 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
+            <h3 className="text-base sm:text-lg font-bold text-green-800 mb-2">
               Cart Items ({cartItems.length})
             </h3>
-            <div className="space-y-2">
+            <div className="space-y-2 text-sm sm:text-base">
               {cartItems.slice(-3).map((item) => (
                 <div
                   key={item.id}
@@ -376,15 +375,15 @@ const handleRedirect = () => {
         {/* Success Modal */}
         {showSuccess && (
           <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full">
+            <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8 max-w-md w-full">
               <div className="text-center">
-                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="w-12 h-12 text-green-600" />
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                  <CheckCircle className="w-10 h-10 sm:w-12 sm:h-12 text-green-600" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-1 sm:mb-2">
                   Success!
                 </h3>
-                <p className="text-gray-600 text-lg">
+                <p className="text-gray-600 text-sm sm:text-lg">
                   Your product has been added to cart successfully!
                 </p>
               </div>

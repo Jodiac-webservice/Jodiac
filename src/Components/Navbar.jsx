@@ -9,7 +9,7 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [userName, setUserName] = useState(null);
-  const [cartQuantity, setCartQuantity] = useState(0); // New state for cart quantity
+  const [cartQuantity, setCartQuantity] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   const accountRef = useRef(null);
@@ -24,29 +24,40 @@ const Navbar = () => {
         }
 
         // Fetch user data
-        const userResponse = await fetch("https://jodiacxthreadorabackend.store/api/auth/getuser", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const userResponse = await fetch(
+          "https://jodiacxthreadorabackend.store/api/auth/getuser",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
         if (userResponse.ok) {
           const userData = await userResponse.json();
           setUserName(userData.user.name);
         }
 
-        // Fetch cart data to get quantity
-        const cartResponse = await fetch("https://jodiacxthreadorabackend.store/api/cart", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        // Fetch cart data
+        const cartResponse = await fetch(
+          "https://jodiacxthreadorabackend.store/api/cart",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
         if (cartResponse.ok) {
           const cartData = await cartResponse.json();
-          const quantity = cartData.cart ? cartData.cart.products.reduce((total, item) => total + item.quantity, 0) : 0;
+          const quantity = cartData.cart
+            ? cartData.cart.products.reduce(
+                (total, item) => total + item.quantity,
+                0
+              )
+            : 0;
           setCartQuantity(quantity);
         }
       } catch (error) {
@@ -65,18 +76,20 @@ const Navbar = () => {
         setAccountMenuOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleOutsideClick);
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, [accountMenuOpen]);
 
+  const scrollToNewArrival = () => {
+    const section = document.getElementById("newarrival-section");
+    if (section) section.scrollIntoView({ behavior: "smooth" });
+  };
+
   const navItems = [
-    { id: 1, label: "Home", path: "/home" },
-    { id: 2, label: "New Arrival", path: "/newarrival" },
-    { id: 3, label: "About Us", path: "/aboutus" },
-    { id: 4, label: "Contact", path: "/contact" },
+    { id: 1, label: "Home", path: "/" },
+    { id: 2, label: "New Arrival", action: scrollToNewArrival },
+    { id: 3, label: "About Us", path: "/AboutUs" },
+    { id: 4, label: "Contact", path: "/ContactUs" },
   ];
 
   const handleAccountClick = () => {
@@ -90,7 +103,7 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setUserName(null);
-    setCartQuantity(0); // Reset cart quantity on logout
+    setCartQuantity(0);
     setAccountMenuOpen(false);
     navigate("/");
   };
@@ -100,7 +113,9 @@ const Navbar = () => {
     {
       id: 5,
       label: userName ? `Hi, ${userName}` : "Account",
-      action: userName ? () => setAccountMenuOpen(!accountMenuOpen) : () => navigate("/signin"),
+      action: userName
+        ? () => setAccountMenuOpen(!accountMenuOpen)
+        : () => navigate("/signin"),
     },
     { id: 6, label: `Cart (${cartQuantity})`, action: () => navigate("/cart") },
   ];
@@ -119,8 +134,8 @@ const Navbar = () => {
             whileHover={{ scale: 1.1, color: "#6b7280" }}
             transition={{ type: "spring", stiffness: 300 }}
             key={`nav-${item.id}`}
-            onClick={() => navigate(item.path)}
-            className="bg-transparent text-gray-300  transition"
+            onClick={() => (item.action ? item.action() : navigate(item.path))}
+            className="bg-transparent text-gray-300 transition"
           >
             {item.label}
           </motion.button>
@@ -142,7 +157,10 @@ const Navbar = () => {
       </motion.div>
 
       {/* Right Section (Desktop) */}
-      <div className="hidden md:flex items-center space-x-6 text-black text-sm md:text-base font-medium tracking-wide relative" ref={accountRef}>
+      <div
+        className="hidden md:flex items-center space-x-6 text-black text-sm md:text-base font-medium tracking-wide relative"
+        ref={accountRef}
+      >
         <motion.button
           whileHover={{ scale: 1.1, color: "#6b7280" }}
           transition={{ type: "spring", stiffness: 300 }}
@@ -160,6 +178,7 @@ const Navbar = () => {
           Cart ({cartQuantity})
         </motion.button>
 
+        {/* Account dropdown */}
         <AnimatePresence>
           {accountMenuOpen && userName && (
             <motion.div
@@ -204,79 +223,77 @@ const Navbar = () => {
           {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
+
       {/* Mobile Menu */}
-<AnimatePresence>
-  {mobileMenuOpen && (
-    <motion.div
-      initial={{ y: -20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
       exit={{ y: -20, opacity: 0 }}
       transition={{ duration: 0.3 }}
       className="absolute top-20 left-0 w-full bg-white/90 backdrop-blur-md shadow-md py-4 flex flex-col space-y-4 px-6 z-50"
     >
       {mobileMenuItems.map((item) => (
-        <button
-          key={`mobile-${item.id}`}
-          onClick={() => {
-            if (item.action) {
-              item.action();
-            }
-            setMobileMenuOpen(false);
-          }}
-          className="text-black text-base font-medium tracking-wide text-left"
-        >
-          {item.label}
-        </button>
+        <div key={`mobile-${item.id}`} className="flex flex-col">
+          <button
+            onClick={() => {
+              if (item.id === 5 && userName) {
+                // Toggle account submenu instead of closing menu
+                setAccountMenuOpen(!accountMenuOpen);
+              } else if (item.action) {
+                item.action();
+                setMobileMenuOpen(false);
+              } else if (item.path) {
+                navigate(item.path);
+                setMobileMenuOpen(false);
+              }
+            }}
+            className="text-black text-base font-medium tracking-wide text-left"
+          >
+            {item.label}
+          </button>
+
+          {/* Mobile Account Submenu */}
+          {item.id === 5 && accountMenuOpen && userName && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="flex flex-col space-y-2 pl-4 pt-2 border-l border-gray-200"
+            >
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setAccountMenuOpen(false);
+                  navigate("/orders");
+                }}
+                className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition"
+              >
+                Orders
+              </button>
+
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setAccountMenuOpen(false);
+                  navigate("/wishlist");
+                }}
+                className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition"
+              >
+                Wishlist
+              </button>
+
+              <button
+                onClick={handleLogout}
+                className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition"
+              >
+                Logout
+              </button>
+            </motion.div>
+          )}
+        </div>
       ))}
-
-      {accountMenuOpen && userName && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="flex flex-col space-y-2 pl-4 pt-2 border-l border-gray-200"
-        >
-          <button
-            onClick={() => {
-              setAccountMenuOpen(false);
-              setMobileMenuOpen(false);
-              navigate("/orders");
-            }}
-            className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition"
-          >
-            Orders
-          </button>
-
-          <button
-            onClick={() => {
-              setAccountMenuOpen(false);
-              setMobileMenuOpen(false);
-              navigate("/wishlist");
-            }}
-            className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition"
-          >
-            Wishlist
-          </button>
-
-          <button
-            onClick={() => {
-              setAccountMenuOpen(false);
-              setMobileMenuOpen(false);
-              navigate("/profile");
-            }}
-            className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition"
-          >
-            Profile
-          </button>
-
-          <button
-            onClick={handleLogout}
-            className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition"
-          >
-            Logout
-          </button>
-        </motion.div>
-      )}
     </motion.div>
   )}
 </AnimatePresence>
