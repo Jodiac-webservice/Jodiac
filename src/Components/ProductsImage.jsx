@@ -19,7 +19,7 @@ const ProductsImage = () => {
         const res = await axios.get(`https://jodiacxthreadorabackend.store/api/product/${id}`);
         setProduct(res.data.product);
       } catch (err) {
-        setError("Something went wrong while fetching product details.",err);
+        setError("Something went wrong while fetching product details.", err);
       } finally {
         setLoading(false);
       }
@@ -41,16 +41,17 @@ const ProductsImage = () => {
     );
 
   return (
-    <div className="w-full max-w-lg mx-auto">
+    <div className="w-full max-w-lg mx-auto px-2 sm:px-0">
       {/* Main Image */}
       <div className="relative rounded-xl overflow-hidden bg-white shadow-lg">
         <img
           src={product.images[currentImageIndex]}
           alt={product.name}
-          className="w-full h-96 object-cover transition-transform duration-300"
+          className="w-full object-cover transition-transform duration-300"
           style={{
             transform: `scale(${zoomLevel}) rotate(${rotation}deg)`,
             transformOrigin: "center center",
+            maxHeight: "60vh", // responsive height
           }}
         />
 
@@ -109,7 +110,7 @@ const ProductsImage = () => {
             src={img}
             alt={`Thumbnail ${index + 1}`}
             onClick={() => setCurrentImageIndex(index)}
-            className={`w-16 h-16 object-cover rounded-lg cursor-pointer border-2 transition-all ${
+            className={`w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg cursor-pointer border-2 transition-all ${
               index === currentImageIndex
                 ? "border-indigo-500"
                 : "border-transparent hover:border-gray-300"

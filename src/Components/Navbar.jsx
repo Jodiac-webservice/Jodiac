@@ -120,7 +120,7 @@ const Navbar = () => {
             transition={{ type: "spring", stiffness: 300 }}
             key={`nav-${item.id}`}
             onClick={() => navigate(item.path)}
-            className="bg-transparent text-white transition"
+            className="bg-transparent text-gray-300  transition"
           >
             {item.label}
           </motion.button>
@@ -147,7 +147,7 @@ const Navbar = () => {
           whileHover={{ scale: 1.1, color: "#6b7280" }}
           transition={{ type: "spring", stiffness: 300 }}
           onClick={handleAccountClick}
-          className="bg-transparent text-white transition"
+          className="bg-transparent text-gray-300 transition"
         >
           {userName ? `Hi, ${userName}` : "Account"}
         </motion.button>
@@ -155,7 +155,7 @@ const Navbar = () => {
           whileHover={{ scale: 1.1, color: "#6b7280" }}
           transition={{ type: "spring", stiffness: 300 }}
           onClick={() => navigate("/cart")}
-          className="bg-transparent text-white transition"
+          className="bg-transparent text-gray-300 transition"
         >
           Cart ({cartQuantity})
         </motion.button>
