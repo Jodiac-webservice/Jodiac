@@ -204,8 +204,6 @@ const Navbar = () => {
           {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
-
-      {/* Mobile Menu */}
       {/* Mobile Menu */}
 <AnimatePresence>
   {mobileMenuOpen && (
