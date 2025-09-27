@@ -206,67 +206,83 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -20, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="absolute top-20 left-0 w-full bg-white/90 backdrop-blur-md shadow-md py-4 flex flex-col space-y-4 px-6 z-50"
+      {/* Mobile Menu */}
+<AnimatePresence>
+  {mobileMenuOpen && (
+    <motion.div
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: -20, opacity: 0 }}
+      transition={{ duration: 0.3 }}
+      className="absolute top-20 left-0 w-full bg-white/90 backdrop-blur-md shadow-md py-4 flex flex-col space-y-4 px-6 z-50"
+    >
+      {mobileMenuItems.map((item) => (
+        <button
+          key={`mobile-${item.id}`}
+          onClick={() => {
+            if (item.action) {
+              item.action();
+            }
+            setMobileMenuOpen(false);
+          }}
+          className="text-black text-base font-medium tracking-wide text-left"
+        >
+          {item.label}
+        </button>
+      ))}
+
+      {accountMenuOpen && userName && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="flex flex-col space-y-2 pl-4 pt-2 border-l border-gray-200"
+        >
+          <button
+            onClick={() => {
+              setAccountMenuOpen(false);
+              setMobileMenuOpen(false);
+              navigate("/orders");
+            }}
+            className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition"
           >
-            {mobileMenuItems.map((item) => (
-              <button
-                key={`mobile-${item.id}`}
-                onClick={() => {
-                  if (item.action) {
-                    item.action();
-                  }
-                  setMobileMenuOpen(false);
-                }}
-                className="text-black text-base font-medium tracking-wide text-left"
-              >
-                {item.label}
-              </button>
-            ))}
-            {accountMenuOpen && userName && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="flex flex-col space-y-2 pl-4 pt-2 border-l border-gray-200"
-              >
-                <button
-                  onClick={() => {
-                    setAccountMenuOpen(false);
-                    setMobileMenuOpen(false);
-                    navigate("/orders");
-                  }}
-                  className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition"
-                >
-                  Orders
-                </button>
-                <button
-                  onClick={() => {
-                    setAccountMenuOpen(false);
-                    setMobileMenuOpen(false);
-                    navigate("/Profile");
-                  }}
-                  className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition"
-                >
-                  Profile
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition"
-                >
-                  Logout
-                </button>
-              </motion.div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+            Orders
+          </button>
+
+          <button
+            onClick={() => {
+              setAccountMenuOpen(false);
+              setMobileMenuOpen(false);
+              navigate("/wishlist");
+            }}
+            className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition"
+          >
+            Wishlist
+          </button>
+
+          <button
+            onClick={() => {
+              setAccountMenuOpen(false);
+              setMobileMenuOpen(false);
+              navigate("/profile");
+            }}
+            className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition"
+          >
+            Profile
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition"
+          >
+            Logout
+          </button>
+        </motion.div>
+      )}
+    </motion.div>
+  )}
+</AnimatePresence>
+
     </motion.nav>
   );
 };

@@ -1,7 +1,7 @@
   import React, { useState, useEffect } from "react";
   import axios from "axios";
 
-  const API_BASE = "https://jodiacxthreadorabackend.store/api/productdetails";
+  const API_BASE = "http://localhost:4000/api/productdetails";
 
   const Products = () => {
     const [products, setProducts] = useState([]);
@@ -45,31 +45,50 @@
 
     // Add new product
     const handleAddProduct = async () => {
-      if (!formData.name || !formData.description || !formData.category || !formData.images) {
-        alert("All fields including image are required");
-        return;
-      }
+  if (!formData.name || !formData.description || !formData.category) {
+    alert("Name, Description, and Category are required");
+    return;
+  }
 
-      const data = new FormData();
-      data.append("name", formData.name);
-      data.append("description", formData.description);
-      data.append("category", formData.category);
-      for (let i = 0; i < formData.images.length; i++) {
-        data.append("images", formData.images[i]);
-      }
+  if (!formData.images || formData.images.length === 0) {
+    alert("Please select at least one image");
+    return;
+  }
 
-      try {
-        await axios.post(`${API_BASE}/addproduct`, data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-        fetchProducts();
-        setFormData({ name: "", description: "", category: "", images: null });
-        setActiveTab("list");
-      } catch (err) {
-        console.error("Error adding product", err);
-      }
+  const data = new FormData();
+  data.append("name", formData.name);
+  data.append("description", formData.description);
+  data.append("category", formData.category);
+
+  // ✅ Append multiple files under the same key
+  for (let i = 0; i < formData.images.length; i++) {
+    data.append("images", formData.images[i]);
+  }
+
+  // Debug
+  for (let pair of data.entries()) {
+    console.log(pair[0], pair[1]);
+  }
+
+try {
+  await axios.post(`${API_BASE}/addproduct`, data); // no manual Content-Type
+  fetchProducts();
+  setFormData({ name: "", description: "", category: "", images: null });
+  setActiveTab("list");
+  alert("Product added successfully!");
+} catch (err) {
+  console.error("Error adding product", err);
+
+  // ✅ Properly show the message from backend
+  if (err.response && err.response.data && err.response.data.error) {
+    alert("Failed to add product: " + err.response.data.error);
+  } else if (err.message) {
+    alert("Failed to add product: " + err.message);
+  } else {
+    alert("Failed to add product: Unknown error");
+  }
+}
     };
-
     // Add product details
     const handleAddDetails = async () => {
       try {
