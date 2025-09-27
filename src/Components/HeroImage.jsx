@@ -40,7 +40,7 @@ const HeroImage = () => {
               backgroundImage: `url(${img})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
-              filter: "blur(2px) brightness(0.6)",
+              filter: "blur(1px) brightness(1.0)",
             }}
           />
         ))}
