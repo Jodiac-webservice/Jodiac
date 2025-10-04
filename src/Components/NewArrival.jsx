@@ -46,7 +46,7 @@ const NewArrival = () => {
               <img
                 src={product.images[0]}
                 alt={product.name}
-                className="w-full h-80 object-cover rounded-lg mb-4"
+                className="w-full h-64 object-cover rounded-lg mb-4"
               />
               {product.discount && (
                 <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
