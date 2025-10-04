@@ -1,4 +1,4 @@
-import Logo from './Group.png';
+import Logo from './JXT.png';
 import Hero1 from './1.png';
 import Hero3 from './3.png';
 import Hero4 from './4.png';

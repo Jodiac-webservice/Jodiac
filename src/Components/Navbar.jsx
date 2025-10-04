@@ -113,7 +113,7 @@ const Navbar = () => {
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="absolute top-0 left-0 w-full z-50 bg-transparent backdrop-blur-md flex items-center justify-between px-6 md:px-16 py-4 border-b border-transparent shadow-sm"
+      className="absolute top-0 left-0 w-full z-50 bg-black/30 backdrop-blur-md flex items-center justify-between px-6 md:px-16 py-0 border-b border-white/20 shadow-sm"
     >
       {/* Left Section (Desktop) */}
       <div className="hidden md:flex space-x-6 text-black text-sm md:text-base font-medium tracking-wide">
@@ -139,8 +139,8 @@ const Navbar = () => {
         <img
           src={assets.Logo}
           alt="logo"
-          className="h-14 md:h-16 w-auto cursor-pointer"
-          onClick={() => navigate("/home")}
+          className=" h-20 md:h-28 w-auto cursor-pointer"
+          onClick={() => navigate("/")}
         />
       </motion.div>
 
