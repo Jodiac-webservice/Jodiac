@@ -9,7 +9,9 @@ const NewArrival = () => {
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const response = await axios.get('https://jodiacxthreadorabackend.store/api/productdetails/getproduct');
+        const response = await axios.get(
+          'https://jodiacxthreadorabackend.store/api/productdetails/getproduct'
+        );
         setProducts(response.data);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -24,7 +26,10 @@ const NewArrival = () => {
   };
 
   return (
-    <div id="newarrival-section" className="bg-white py-12 px-4 sm:px-6 md:px-12 lg:px-20">
+    <div
+      id="newarrival-section"
+      className="bg-white py-12 px-4 sm:px-6 md:px-12 lg:px-20"
+    >
       <h2 className="text-3xl sm:text-4xl text-left font-extrabold text-gray-900 mb-8 sm:mb-12">
         New Arrivals
       </h2>
@@ -34,22 +39,52 @@ const NewArrival = () => {
           <div
             key={product._id}
             onClick={() => handleProductClick(product._id)}
-            className="flex flex-col cursor-pointer group transition-transform hover:-translate-y-2 duration-300 text-left"
+            className="flex flex-col cursor-pointer group transition-transform hover:-translate-y-2 duration-300 text-left p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-lg"
           >
-            <img
-              src={product.images[0]}
-              alt={product.name}
-              className="w-full h-96 sm:h-72 md:h-80 object-cover mb-4 shadow-lg"
-            />
-            <h3 className="text-base sm:text-lg font-semibold text-gray-800">
+            {/* Product Image */}
+            <div className="relative">
+              <img
+                src={product.images[0]}
+                alt={product.name}
+                className="w-full h-80 object-cover rounded-lg mb-4"
+              />
+              {product.discount && (
+                <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+                  {product.discount}% OFF
+                </span>
+              )}
+            </div>
+
+            {/* Product Info */}
+            <h3 className="text-lg font-semibold text-gray-800 truncate">
               {product.name}
             </h3>
-            <p className="text-gray-600 mt-1 sm:mt-2">{product.description}</p>
-            {product.status && (
-              <span className="mt-1 text-sm text-red-500 font-medium">
-                {product.status}
+
+            <p className="text-gray-600 mt-1 line-clamp-2 text-sm">
+              {product.description}
+            </p>
+
+            {/* Category */}
+            <p className="text-sm text-gray-500 mt-1">
+              {product.category}
+            </p>
+
+            {/* Sizes */}
+            <p className="text-sm text-gray-600 mt-1">
+              Sizes: {product.size.join(', ')}
+            </p>
+
+            {/* Price Section */}
+            <div className="flex items-center space-x-2 mt-2">
+              <span className="text-lg font-bold text-gray-900">
+                ₹{product.price}
               </span>
-            )}
+              {product.oldprice && (
+                <span className="text-sm line-through text-gray-500">
+                  ₹{product.oldprice}
+                </span>
+              )}
+            </div>
           </div>
         ))}
       </div>
