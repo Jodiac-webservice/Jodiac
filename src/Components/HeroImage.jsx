@@ -5,8 +5,8 @@ const HeroImage = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const { Hero1, Hero2, Hero3, Hero4, Hero5, Hero6, Hero7 } = assets;
-  const heroImages = [Hero1, Hero2, Hero3, Hero4, Hero5, Hero6, Hero7];
+  const { Hero1, Hero3, Hero4, Hero5, Hero6, Hero7 } = assets;
+  const heroImages = [Hero1, Hero3, Hero4, Hero5, Hero6, Hero7];
 
   useEffect(() => {
     setIsLoaded(true);
@@ -56,7 +56,7 @@ const HeroImage = () => {
             isLoaded ? "translate-y-0 opacity-100" : "translate-y-16 opacity-0"
           }`}
         >
-          <span className="block bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-500">
+          <span className="block bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-500 text-5xl sm:text-6xl md:text-7xl lg:text-8xl">
             COSMIC
           </span>
           <span className="block text-white/90 font-light text-2xl sm:text-3xl md:text-4xl mt-2">
@@ -65,13 +65,12 @@ const HeroImage = () => {
         </h1>
 
         <p
-  className={`text-left text-white/70 text-base sm:text-lg md:text-xl mb-6 sm:mb-8 max-w-xl leading-relaxed transform transition-all duration-1000 ${
-    isLoaded ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
-  }`}
->
-  Explore cosmic-inspired designs that blend art, style, and infinite imagination. Let your wardrobe transcend the ordinary.
-</p>
-
+          className={`text-left text-white/70 text-base sm:text-lg md:text-xl mb-6 sm:mb-8 max-w-xl leading-relaxed transform transition-all duration-1000 ${
+            isLoaded ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
+          }`}
+        >
+          Explore cosmic-inspired designs that blend art, style, and infinite imagination. Let your wardrobe transcend the ordinary.
+        </p>
 
         <button
           onClick={handleExplore}
@@ -81,20 +80,22 @@ const HeroImage = () => {
           <div className="absolute inset-0 bg-white/10 rounded-xl pointer-events-none" />
         </button>
 
-        {/* Image Indicators */}
-        <div className="flex space-x-3 mt-6">
-          {heroImages.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentImageIndex(idx)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                idx === currentImageIndex
-                  ? "bg-white scale-125 shadow-lg"
-                  : "bg-white/50 hover:bg-white/80"
-              }`}
-            />
-          ))}
-        </div>
+<div className="absolute bottom-15 left-1/2 transform -translate-x-1/2 z-30">
+  <div className="flex space-x-3">
+    {heroImages.map((_, idx) => (
+      <button
+        key={idx}
+        onClick={() => setCurrentImageIndex(idx)}
+        className={`w-3 h-3 rounded-full transition-all duration-300 ${
+          idx === currentImageIndex
+            ? "bg-white scale-125 shadow-lg"
+            : "bg-white/50 hover:bg-white/80"
+        }`}
+      />
+    ))}
+  </div>
+</div>
+
       </div>
 
       {/* Mobile Scroll Indicator */}

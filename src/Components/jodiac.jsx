@@ -8,20 +8,27 @@ const BestForUs = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get(
-          'https://jodiacxthreadorabackend.store/api/productdetails/getproduct'
-        );
-        // Take top 3 products
-        setProducts(response.data.slice(0, 3));
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
-    };
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(
+        "https://jodiacxthreadorabackend.store/api/productdetails/getproduct"
+      );
 
-    fetchProducts();
-  }, []);
+      const products = response.data;
+
+      // Shuffle array (Fisher–Yates)
+      const shuffled = [...products].sort(() => Math.random() - 0.5);
+
+      // Pick 5 random products
+      setProducts(shuffled.slice(0, 5));
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  fetchProducts();
+}, []);
+
 
   const handleProductClick = (productId) => {
     navigate(`/Productpage/${productId}`);
