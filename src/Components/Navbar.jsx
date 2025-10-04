@@ -108,18 +108,6 @@ const Navbar = () => {
     navigate("/");
   };
 
-  const mobileMenuItems = [
-    ...navItems,
-    {
-      id: 5,
-      label: userName ? `Hi, ${userName}` : "Account",
-      action: userName
-        ? () => setAccountMenuOpen(!accountMenuOpen)
-        : () => navigate("/signin"),
-    },
-    { id: 6, label: `Cart (${cartQuantity})`, action: () => navigate("/cart") },
-  ];
-
   return (
     <motion.nav
       initial={{ y: -80, opacity: 0 }}
@@ -198,15 +186,6 @@ const Navbar = () => {
                 Orders
               </button>
               <button
-                onClick={() => {
-                  setAccountMenuOpen(false);
-                  navigate("/wishlist");
-                }}
-                className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition"
-              >
-                Wishlist
-              </button>
-              <button
                 onClick={handleLogout}
                 className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition"
               >
@@ -226,77 +205,80 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
+  {mobileMenuOpen && (
+    <motion.div
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
       exit={{ y: -20, opacity: 0 }}
       transition={{ duration: 0.3 }}
       className="absolute top-20 left-0 w-full bg-white/90 backdrop-blur-md shadow-md py-4 flex flex-col space-y-4 px-6 z-50"
     >
-      {mobileMenuItems.map((item) => (
-        <div key={`mobile-${item.id}`} className="flex flex-col">
+      {navItems.map((item) => (
+        <button
+          key={`mobile-${item.id}`}
+          onClick={() => {
+            if (item.action) {
+              item.action();
+            } else if (item.path) {
+              navigate(item.path);
+            }
+            setMobileMenuOpen(false);
+          }}
+          className="text-black text-base font-medium tracking-wide text-left"
+        >
+          {item.label}
+        </button>
+      ))}
+
+      {/* Account / Auth */}
+      {userName ? (
+        <>
           <button
             onClick={() => {
-              if (item.id === 5 && userName) {
-                // Toggle account submenu instead of closing menu
-                setAccountMenuOpen(!accountMenuOpen);
-              } else if (item.action) {
-                item.action();
-                setMobileMenuOpen(false);
-              } else if (item.path) {
-                navigate(item.path);
-                setMobileMenuOpen(false);
-              }
+              navigate("/orders");
+              setMobileMenuOpen(false);
             }}
             className="text-black text-base font-medium tracking-wide text-left"
           >
-            {item.label}
+            Orders
           </button>
 
-          {/* Mobile Account Submenu */}
-          {item.id === 5 && accountMenuOpen && userName && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="flex flex-col space-y-2 pl-4 pt-2 border-l border-gray-200"
-            >
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  setAccountMenuOpen(false);
-                  navigate("/orders");
-                }}
-                className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition"
-              >
-                Orders
-              </button>
+          <button
+            onClick={() => {
+              handleLogout();
+              setMobileMenuOpen(false);
+            }}
+            className="text-black text-base font-medium tracking-wide text-left"
+          >
+            Logout
+          </button>
+        </>
+      ) : (
+        <button
+          onClick={() => {
+            navigate("/signin");
+            setMobileMenuOpen(false);
+          }}
+          className="text-black text-base font-medium tracking-wide text-left"
+        >
+          Account
+        </button>
+      )}
 
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  setAccountMenuOpen(false);
-                  navigate("/wishlist");
-                }}
-                className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition"
-              >
-                Wishlist
-              </button>
-
-              <button
-                onClick={handleLogout}
-                className="w-full text-left text-sm text-gray-700 hover:text-gray-900 transition"
-              >
-                Logout
-              </button>
-            </motion.div>
-          )}
-        </div>
-      ))}
+      {/* Cart */}
+      <button
+        onClick={() => {
+          navigate("/cart");
+          setMobileMenuOpen(false);
+        }}
+        className="text-black text-base font-medium tracking-wide text-left"
+      >
+        Cart ({cartQuantity})
+      </button>
     </motion.div>
   )}
 </AnimatePresence>
+
 
     </motion.nav>
   );
