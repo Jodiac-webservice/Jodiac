@@ -83,7 +83,6 @@ function ProductsDetails() {
             productName: product.name,
             productColor: selectedColor,
             productSize: selectedSize,
-            productWeight: selectedWeight,
             productQuantity: quantity,
             productPrice: product.price,
           },
@@ -102,7 +101,6 @@ function ProductsDetails() {
       name: product.name,
       color: selectedColor,
       size: selectedSize,
-      weight: selectedWeight,
       quantity,
       price: product.price,
       discount: product.discount,
@@ -246,21 +244,39 @@ function ProductsDetails() {
           </div>
 
           {/* Price */}
-          <div className="bg-gradient-to-r from-black via-[#14213d] to-[#e5e5e5] p-1 rounded-2xl sm:rounded-3xl mb-6 sm:mb-8">
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
-              <span className="text-2xl sm:text-4xl font-black text-gray-900">
-                ₹{product.price.toLocaleString()}
-              </span>
-              <div className="flex flex-wrap items-center gap-2 sm:space-x-3">
-                <div className="bg-gradient-to-r from-red-500 to-pink-600 text-white px-3 sm:px-4 py-1 sm:py-2 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-lg">
-                  Save {product.discount}%
-                </div>
-                <div className="text-green-600 font-bold text-sm sm:text-lg">
-                  ₹{(product.oldprice - product.price).toLocaleString()} OFF
-                </div>
-              </div>
-            </div>
-          </div>
+<div className="bg-gradient-to-r from-black via-[#14213d] to-[#e5e5e5] p-1 rounded-2xl sm:rounded-3xl mb-6 sm:mb-8">
+  <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 flex flex-col gap-4">
+
+    {/* Old + Discounted */}
+    <div className="flex items-baseline gap-3">
+      <span className="text-2xl sm:text-4xl font-black text-gray-900">
+        ₹{product.price.toLocaleString()}
+      </span>
+      <span className="text-lg sm:text-2xl text-gray-500 line-through">
+        ₹{product.oldprice.toLocaleString()}
+      </span>
+      <span className="bg-gradient-to-r from-red-500 to-pink-600 text-white px-3 sm:px-4 py-1 sm:py-2 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-lg">
+        {product.discount}% OFF
+      </span>
+    </div>
+
+    {/* Savings */}
+    <div className="text-green-600 font-bold text-sm sm:text-lg">
+      You save ₹{(product.oldprice - product.price).toLocaleString()}
+    </div>
+
+    {/* Final Payable */}
+    <div className="flex items-center justify-between bg-gradient-to-r from-green-100 to-green-50 border border-green-200 rounded-xl sm:rounded-2xl p-3 sm:p-4">
+      <span className="text-lg sm:text-2xl font-bold text-green-800">
+        Final Payable
+      </span>
+      <span className="text-2xl sm:text-3xl font-black text-green-700">
+        ₹{(product.price - (product.price * product.discount) / 100).toFixed(0)}
+      </span>
+    </div>
+  </div>
+</div>
+
 
           {/* Description */}
           <div className="bg-gray-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8">
@@ -286,14 +302,6 @@ function ProductsDetails() {
                 setSelected={setSelectedSize}
               />
             </div>
-            <div className="space-y-5 sm:space-y-6 text-[#14213d]">
-              <SelectionButtons
-                title="Choose Weight Option"
-                options={product.weight}
-                selected={selectedWeight}
-                setSelected={setSelectedWeight}
-              />
-              {/* Quantity */}
               <div className="space-y-3 sm:space-y-4">
                 <div className="flex items-center space-x-2">
                   <Plus className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
@@ -391,7 +399,6 @@ function ProductsDetails() {
           </div>
         )}
       </div>
-    </div>
   );
 }
 
