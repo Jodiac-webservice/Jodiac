@@ -75,16 +75,27 @@ const NewArrival = () => {
             </p>
 
             {/* Price Section */}
-            <div className="flex items-center space-x-2 mt-2">
-              <span className="text-lg font-bold text-gray-900">
-                ₹{product.price}
-              </span>
-              {product.oldprice && (
-                <span className="text-sm line-through text-gray-500">
-                  ₹{product.oldprice}
-                </span>
-              )}
-            </div>
+<div className="mt-2">
+  {/* Label + Final Payable */}
+  <div className="flex items-baseline space-x-1">
+    <span className="text-sm font-medium text-gray-600">After Discount:</span>
+    <span className="text-2xl sm:text-3xl font-extrabold text-green-700">
+      ₹{(product.price - (product.price * product.discount) / 100).toFixed(0)}
+    </span>
+  </div>
+
+  {/* Price + Old Price */}
+  <div className="flex items-center space-x-2 mt-1">
+    <span className="text-base font-semibold text-gray-900">
+      ₹{product.price}
+    </span>
+    {product.oldprice && (
+      <span className="text-sm line-through text-gray-500">
+        ₹{product.oldprice}
+      </span>
+    )}
+  </div>
+</div>
           </div>
         ))}
       </div>
