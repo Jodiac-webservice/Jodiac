@@ -14,7 +14,7 @@ const BestForUs = () => {
         const response = await axios.get(
           "https://jodiacxthreadorabackend.store/api/productdetails/getproduct"
         );
-        const products = response.data;
+        const products = response.data || [];
 
         // Shuffle + pick 5
         const shuffled = [...products].sort(() => Math.random() - 0.5);
@@ -36,17 +36,17 @@ const BestForUs = () => {
       <div className="text-left text-2xl md:text-4xl font-extrabold mb-6 md:mb-10 tracking-wide">
         @The_Best_From_Us
       </div>
+
       <div className="flex overflow-x-auto no-scrollbar space-x-4 md:space-x-6 snap-x snap-mandatory">
         {products.map((product, index) => {
-          // ✅ Discounted price logic
+          const price = Number(product.price) || 0;
+          const discount = Number(product.discount) || 0;
           const finalPrice =
-            product.discount && product.discount > 0
-              ? product.price - (product.price * product.discount) / 100
-              : product.price;
+            discount > 0 ? price - (price * discount) / 100 : price;
 
           return (
             <motion.div
-              key={product._id}
+              key={product._id || index}
               onClick={() => handleProductClick(product._id)}
               className="min-w-[240px] sm:min-w-[280px] md:min-w-[320px] flex-shrink-0 bg-white rounded-2xl shadow-lg overflow-hidden snap-start cursor-pointer group border"
               initial={{ opacity: 0, y: 40 }}
@@ -54,10 +54,14 @@ const BestForUs = () => {
               transition={{ duration: 0.5, delay: index * 0.15 }}
             >
               {/* Product Image */}
-              <div className="relative w-full h-60 sm:h-64 md:h-72 overflow-hidden">
+              <div className="relative w-full h-60 sm:h-64 md:h-72 overflow-hidden bg-gray-100">
                 <img
-                  src={product.images[0]}
-                  alt={product.name}
+                  src={
+                    product.images && product.images[0]
+                      ? product.images[0]
+                      : "https://via.placeholder.com/300x300?text=No+Image"
+                  }
+                  alt={product.name || "Product"}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
                 <button className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur flex items-center justify-center hover:bg-red-100 text-gray-600 hover:text-red-500">
@@ -69,7 +73,7 @@ const BestForUs = () => {
               <div className="p-4 space-y-2">
                 {/* Name */}
                 <div className="text-lg sm:text-xl font-bold text-gray-900 line-clamp-1">
-                  {product.name}
+                  {product.name || "Untitled Product"}
                 </div>
 
                 {/* Rating */}
@@ -85,48 +89,44 @@ const BestForUs = () => {
                     />
                   ))}
                   <span className="ml-1 text-xs text-gray-500">
-                    {product.rating?.toFixed(1) || "4.0"}
+                    {product.rating?.toFixed?.(1) || "4.0"}
                   </span>
                 </div>
 
                 {/* Price Section */}
-                {/* Price Section */}
-<div className="flex items-baseline gap-2">
-  {product.discount ? (
-    <>
-      {/* Final Price */}
-      <span className="text-xl sm:text-2xl font-bold text-gray-900">
-        ₹
-        {(
-          product.price - (product.price * product.discount) / 100
-        ).toLocaleString()}
-      </span>
+                <div className="flex items-baseline gap-2">
+                  {discount > 0 ? (
+                    <>
+                      {/* Final Price */}
+                      <span className="text-xl sm:text-2xl font-bold text-gray-900">
+                        ₹{finalPrice?.toLocaleString?.() ?? "N/A"}
+                      </span>
 
-      {/* Original Price */}
-      <span className="text-sm sm:text-base line-through text-gray-400">
-        ₹{product.price.toLocaleString()}
-      </span>
+                      {/* Original Price */}
+                      <span className="text-sm sm:text-base line-through text-gray-400">
+                        ₹{price?.toLocaleString?.() ?? "N/A"}
+                      </span>
 
-      {/* Discount Badge */}
-      <span className="text-xs sm:text-sm font-bold bg-red-500 text-white px-2 py-1 rounded-lg">
-        {product.discount}% OFF
-      </span>
-    </>
-  ) : (
-    <span className="text-xl sm:text-2xl font-bold text-gray-900">
-      ₹{product.price.toLocaleString()}
-    </span>
-  )}
-</div>
+                      {/* Discount Badge */}
+                      <span className="text-xs sm:text-sm font-bold bg-red-500 text-white px-2 py-1 rounded-lg">
+                        {discount}% OFF
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-xl sm:text-2xl font-bold text-gray-900">
+                      ₹{price?.toLocaleString?.() ?? "N/A"}
+                    </span>
+                  )}
+                </div>
 
-{/* Savings */}
-{product.discount && (
-  <div className="text-xs sm:text-sm font-medium text-green-600">
-    You save ₹
-    {((product.price * product.discount) / 100).toLocaleString()}
-  </div>
-)}
-              </div>xl
+                {/* Savings */}
+                {discount > 0 && (
+                  <div className="text-xs sm:text-sm font-medium text-green-600">
+                    You save ₹
+                    {((price * discount) / 100)?.toLocaleString?.() ?? "0"}
+                  </div>
+                )}
+              </div>
             </motion.div>
           );
         })}
