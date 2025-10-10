@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ZoomIn,
-  ZoomOut,
-  RotateCw,
-  Heart,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCw, Heart } from "lucide-react";
 import { useParams } from "react-router-dom";
 
 const ProductsImage = () => {
@@ -23,12 +16,10 @@ const ProductsImage = () => {
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const res = await axios.get(
-          `https://jodiacxthreadorabackend.store/api/product/${id}`
-        );
+        const res = await axios.get(`https://jodiacxthreadorabackend.store/api/product/${id}`);
         setProduct(res.data.product);
       } catch (err) {
-        setError("Something went wrong while fetching product details.");
+        setError("Something went wrong while fetching product details.", err);
       } finally {
         setLoading(false);
       }
@@ -49,20 +40,10 @@ const ProductsImage = () => {
       prev === product.images.length - 1 ? 0 : prev + 1
     );
 
-  // ✅ New: open image in new tab on click
-  const handleOpenInNewTab = () => {
-    const imageUrl = product.images[currentImageIndex];
-    if (imageUrl) window.open(imageUrl, "_blank", "noopener,noreferrer");
-  };
-
   return (
     <div className="w-full max-w-lg mx-auto px-2 sm:px-0">
       {/* Main Image */}
-      <div
-        className="relative rounded-xl overflow-hidden bg-white shadow-lg cursor-zoom-in"
-        onClick={handleOpenInNewTab}
-        title="Click to open full image"
-      >
+      <div className="relative rounded-xl overflow-hidden bg-white shadow-lg">
         <img
           src={product.images[currentImageIndex]}
           alt={product.name}
@@ -70,25 +51,19 @@ const ProductsImage = () => {
           style={{
             transform: `scale(${zoomLevel}) rotate(${rotation}deg)`,
             transformOrigin: "center center",
-            maxHeight: "60vh",
+            maxHeight: "60vh", // responsive height
           }}
         />
 
         {/* Navigation */}
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handlePrev();
-          }}
+          onClick={handlePrev}
           className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2 hover:bg-white shadow"
         >
           <ChevronLeft className="w-5 h-5 text-gray-700" />
         </button>
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleNext();
-          }}
+          onClick={handleNext}
           className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2 hover:bg-white shadow"
         >
           <ChevronRight className="w-5 h-5 text-gray-700" />
@@ -96,10 +71,7 @@ const ProductsImage = () => {
 
         {/* Like */}
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsLiked(!isLiked);
-          }}
+          onClick={() => setIsLiked(!isLiked)}
           className={`absolute top-2 right-2 rounded-full p-2 ${
             isLiked ? "bg-red-500 text-white" : "bg-white/70 text-gray-700"
           } shadow hover:scale-105 transition`}
